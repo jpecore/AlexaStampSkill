@@ -1,7 +1,7 @@
 /**
  * Copyright 2017 Joe Pecore
  * 
- * Stamp ID
+ * Stamp Collector
  * 
  * Resources ISWSC World Wide Stamp Identifier
  * http://www.iswsc.org/iswsc_identifier.html
