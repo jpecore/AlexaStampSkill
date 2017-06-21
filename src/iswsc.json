@@ -132,7 +132,7 @@
     "countries": " Madagascar or Diego Suarez used during stamp shortage (speculative) [Postage Paid Thus Low Values Scarce]."
   },
   "AFFRANCH": {
-    "countries": " officials for government mail."
+    "countries": " (overprint precancel in France, Morocco, Andorra, Monaco): officials for government mail."
   },
   "AFGHAN": {
     "countries": " Afghanistan."
@@ -164,7 +164,7 @@
   "AFRIQUEOCCIDENTALEFRANCAISE": {
     "countries": " French West Africa."
   },
-  "AHU'A": {
+  "AHUA": {
     "countries": " Bogus fantasy stamp from Burma.Bogus"
   },
   "AIDEZLESTUBERCULEUX": {
@@ -179,16 +179,16 @@
   "AJANLAS": {
     "countries": " Hungary, registration stamps (1946)."
   },
-  "Ajl1,Ajl2": {
+  "AJl.1": {
+    "countries": " Hungary, registration stamps (1946)."
+  },
+   "AJl.2": {
     "countries": " Hungary, registration stamps (1946)."
   },
   "AKATA": {
     "countries": " Fantasy bogus issue from the Philippines.Bogus"
   },
   "ALAOUITES": {
-    "countries": " Alaouites."
-  },
-  "ALAOUITES(overprintonstampsofSyria)": {
     "countries": " Alaouites."
   },
   "ALBANIA": {
@@ -272,7 +272,10 @@
   "ANGOLAGOVERNMENTINEXILE": {
     "countries": " Supposed freedom issues for Angola. A Henry Stull fantasy, once listed in Ohio telephone book under &amp;quot;Stamps for Collectors.&amp;quot;Bogus"
   },
-  "ANGWEELA,FREE": {
+  "ANGWEELAFREE": {
+    "countries": " Parody of Anguilla overprints.Bogus"
+  },
+  "ANGWEELA": {
     "countries": " Parody of Anguilla overprints.Bogus"
   },
   "ANHAPADINERA": {
@@ -284,11 +287,8 @@
   "ANNA(currencysurchargedonFrenchstamps)": {
     "countries": " France- Offices in Zanzibar."
   },
-  "ANNA(currencysurchargedonstampsofGreatBritain)": {
-    "countries": " Muscat &amp; Oman."
-  },
   "ANNA": {
-    "countries": " British East Africa, India, Indian States, Mesopotamia, Zanzibar, Pakistan."
+    "countries": " Muscat &amp; Oman. or British East Africa, India, Indian States, Mesopotamia, Zanzibar, Pakistan "
   },
   "ANTARCTICA": {
     "countries": " Labels for 1954 expedition.Bogus"
@@ -356,10 +356,10 @@
   "ASSISTENCIAPUBLICA": {
     "countries": " Portuguese India and Mozambique, postal tax stamps [Public Assistance]."
   },
-  "ASSISTENCIADLno72": {
+  "ASSISTENCIADL": {
     "countries": " Timor, social welfare."
   },
-  "ASUNCION(underprint)": {
+  "ASUNCION": {
     "countries": " Paraguay, officials for 350th anniversary of the capital (1886)."
   },
   "ATBETALE": {
@@ -422,13 +422,16 @@
   "AVISPORTOMAERKE": {
     "countries": " Denmark, newspaper stamps sent in bulk to agents or singular non-subscribers."
   },
-  "AVO(S)": {
+  "AVO": {
+    "countries": " Macao or Timor."
+  },
+   "AVOS": {
     "countries": " Macao or Timor."
   },
   "AYACUCHO": {
     "countries": " Peru- Ayacucho- Chilean occupation (1881)."
   },
-  "AYTONOMO?": {
+  "AYTONOMO": {
     "countries": " Epirus."
   },
   "AYUDAELECUADOR": {
@@ -440,15 +443,11 @@
   "AZERBAIDJAN": {
     "countries": " Azerbaijan (1919-22)"
   },
-  "B(backtotop)": {
-    "countries": " Bogus"
-  },
-  "B(inanovalwithnocountryname)": {
-    "countries": " Belgium, parcel post stamps."
-  },
+  
   "B": {
-    "countries": " Bangkok (1882-5)."
+    "countries": " Belgium, parcel post stamps.  Bangkok (1882-5)"
   },
+ 
   "BDPTOZELAYA": {
     "countries": " Nicaragua- province of Zelaya (used to prevent currency manipulation)."
   },
@@ -503,7 +502,7 @@
   "BPC": {
     "countries": " Belgian military postmark [Bureau de Poste de Campagne]."
   },
-  "BPCwithVPK": {
+  "BPCVPK": {
     "countries": " Belgian military postmark [Bureau de Poste de Campagne- Veld Post Kantoor]."
   },
   "BRA5CENTS": {
@@ -523,9 +522,6 @@
   },
   "BAHRAIN": {
     "countries": " Bahrain (1948-60)."
-  },
-  "BAHRAIN(overprintonstampsofIndia)": {
-    "countries": " Bahrain (1933-44)."
   },
   "BAHT": {
     "countries": " Thailand (Siam)."
@@ -555,13 +551,10 @@
     "countries": " Philippines, Muslim controlled area, handstamp on Philippine Islands stamps.Bogus"
   },
   "BANI": {
-    "countries": " Romania."
-  },
-  "BANI(currencyoverprintonstampsofHungary)": {
-    "countries": " Romania- Austro-Hungarian occupation (1919)."
+    "countries": " Romania Austro-Hungarian occupation (1919). "
   },
   "BANTAYANISLANDS": {
-    "countries": " Philippine island northeast of Cebu.Bogus"
+    "countries": " Philippine island northeast of Cebu. Bogus"
   },
   "BARANYA": {
     "countries": " Hungary- Serbian occupation (1919)."
@@ -569,7 +562,7 @@
   "BARBERIA": {
     "countries": " Italy- Offices in Tripoli."
   },
-  "BARBUDA(overprintonstampsofLeewardIslands)": {
+  "BARBUDA": {
     "countries": " Barbuda (1922)."
   },
   "BARCELONA": {
@@ -614,21 +607,15 @@
   "BECHUANALAND": {
     "countries": " Bechuanaland (1945)."
   },
-  "BECHUANALANDPROTECTORATE(overprintonstampsofCapeofGoodHope)": {
+  "BECHUANALANDPROTECTORATE": {
     "countries": " Bechuanaland Protectorate (1899)."
   },
-  "BECHUANALANDPROTECTORATE": {
-    "countries": " Bechuanaland Protectorate (1897-1926)."
-  },
-  "BEC?P?3OPHbIM?ET?M": {
-    "countries": " Russia, semipostal."
-  },
+ 
+  
   "BEHAEHCKAR": {
     "countries": " Russia."
   },
-  "BEH?EHCKA??lb3?HA??O?TA": {
-    "countries": " Russia- Wenden."
-  },
+ 
   "BELGIANEASTAFRICA": {
     "countries": " Ruanda-Urundi."
   },
@@ -704,7 +691,7 @@
   "BLJESAK": {
     "countries": " Jugoslavia.Bogus"
   },
-  "BMAMALAYA(overprintonstampsofStraitsSettlements)": {
+  "BMAMALAYA": {
     "countries": " Malaya (1945-6) [British Military Administration]."
   },
   "BOARDOFEDUCATION": {
@@ -743,7 +730,7 @@
   "BOLIVAR": {
     "countries": " Venezuela."
   },
-  "BOLIVAR,SUCREMIRANDADECRETO…(overprintonEscuelasstampsofVenezuela)": {
+  "BOLIVAR,SUCREMIRANDADECRETO�": {
     "countries": " Venezuela,validation of non-postage school stamps."
   },
   "BOLLAWOLLABONGO(WOLLAWOLLABONGO)": {
@@ -764,7 +751,7 @@
   "BOOKGIRL,REPUBLICOF": {
     "countries": " Bogus art stamp. Created by John Rininger in his Rausch Post series.Bogus"
   },
-  "BOSNAIHERCEGOVINA(overprintonstampsofBosniaandHerzegovina)": {
+  "BOSNAIHERCEGOVINA": {
     "countries": " Yugoslavia (1918)."
   },
   "BOSNIENHERZEGOVINA": {
@@ -800,15 +787,11 @@
   "BRITISHBECHUANALAND": {
     "countries": " Bechuanaland."
   },
-  "BRITISHBECHUANALAND(overprintonstampsofCapeofGoodHope)": {
-    "countries": " Bechuanaland."
-  },
-  "BRITISHEASTAFRICA(overprintonstampsofBritishIndia)": {
+ 
+  "BRITISHEASTAFRICA": {
     "countries": " British East Africa (1895-7)."
   },
-  "BRITISHEASTAFRICA(overprintonstampsofZanzibar)": {
-    "countries": " British East Africa (1895-7)."
-  },
+ 
   "BRITISHNEWGUINEA": {
     "countries": " Papua and New Guinea (1901-5)."
   },
@@ -951,15 +934,12 @@
     "countries": " Cape Juby (1916)."
   },
   "CABOJUBY": {
-    "countries": " Cape Juby (1919-33)."
-  },
-  "CABOJUBY(overprintonstampsofSpanishMorocco)": {
-    "countries": " Cape Juby (1934-48)."
+    "countries": " Cape Juby (1919-33) and (1934-48)."
   },
   "CABOVERDE": {
     "countries": " Cape Verde."
   },
-  "CACHES(overprintonFranceandFrenchColoniespostagedues)": {
+  "CACHES": {
     "countries": " French India, postage dues."
   },
   "CADAQUES": {
@@ -1001,18 +981,13 @@
   "CAMBODGE": {
     "countries": " Cambodia."
   },
-  "CAMEROONSUKTT(overprintonstampsofNigeria)": {
+  "CAMEROONSUKTT": {
     "countries": " Cameroons (1960-1) [United Kingdom Trust Territory]."
   },
-  "CAMEROUN(overprintonstampsofFrenchCongo)": {
+  "CAMEROUN": {
     "countries": " Cameroun (1915-25)."
   },
-  "CAMEROUN(overprintonstampsofGabon)": {
-    "countries": " Cameroun (1915-25)."
-  },
-  "CAMEROUN(overprintonstampsofMiddleCongo)": {
-    "countries": " Cameroun (1915-25)."
-  },
+
   "CAMPACHE": {
     "countries": " Mexico- Campache (1876)."
   },
@@ -1028,12 +1003,10 @@
   "CANADRIN": {
     "countries": " China (pre-1897)."
   },
-  "CANALZONE(overprintonstampsofPanama)": {
+  "CANALZONE": {
     "countries": " Canal Zone."
   },
-  "CANALZONE(overprintonstampsofUS)": {
-    "countries": " Canal Zone."
-  },
+ 
   "CANARIAS": {
     "countries": " Spain- Canary Islands (1936-7)."
   },
@@ -1043,7 +1016,7 @@
   "CANCELLEDVRI": {
     "countries": " Transvaal- second British occupation- Wolmaranstad (1900)."
   },
-  "CANTON(overprintonstampsofIndoChina)": {
+  "CANTON": {
     "countries": " France- Offices in China- Canton (1901-23)."
   },
   "CANTONALTAXE": {
@@ -1082,7 +1055,7 @@
   "CASTELORISO": {
     "countries": " Castellorizo (1920)."
   },
-  "CASTELORIZO(overprintonstampsofFranceOfficesinTurkey)": {
+  "CASTELORIZO": {
     "countries": " Castellorizo (1920)."
   },
   "CASTELROSSO": {
@@ -1106,7 +1079,7 @@
   "CECHYAMORAVA": {
     "countries": " Czechoslovakia- Bohemia and Moravia."
   },
-  "CEFOLONIAEITACA(overprintonstampsofGreece)": {
+  "CEFOLONIAEITACA": {
     "countries": " Ionian Islands- Italian occupation (1941)."
   },
   "CENT(S)(currencyoverprint)": {
@@ -1151,8 +1124,8 @@
   "CENTIMOS": {
     "countries": " France- Offices in Morocco (1891-1910)."
   },
-  "CERIGO(overprintonstampsofGreece)": {
-    "countries": " Ionian Islands- fraudulent issue."
+  "CERIGO": {
+    "countries": "overprint on stamps ofGreece  Ionian Islands- fraudulent issue."
   },
   "CERRADOYSELLADO": {
     "countries": " Mexico, official seals."
@@ -1236,11 +1209,9 @@
     "countries": " Ecuador- Chimborazo (1902)."
   },
   "CHINA": {
-    "countries": " Germany- Offices in China (1898-1913)."
+    "countries": " Germany- Offices in China (1898-1913). Great Britain- Offices in China (1917-27)."
   },
-  "CHINA(overprintonstampsofHongKong)": {
-    "countries": " Great Britain- Offices in China (1917-27)."
-  },
+ 
   "CHINE": {
     "countries": " France- Offices in China (1894-1922)."
   },
@@ -1248,11 +1219,9 @@
     "countries": " China (1898-1912)."
   },
   "CHRISTMASISLAND": {
-    "countries": " Stamps printed prior to 1958 were printed and used by the Central Pacific Coconut Plantation Ltd.Bogus"
+    "countries": "overprint on stamps of Australia Christmas Island (1958-62). Stamps printed prior to 1958 were printed and used by the Central Pacific Coconut Plantation Ltd.Bogus"
   },
-  "CHRISTMASISLAND(overprintonstampsofAustralia)": {
-    "countries": " Christmas Island (1958-62)."
-  },
+ 
   "CHRISTMASISLANDAUSTRALIA": {
     "countries": " Booklets that have no connection with Australia Post or any official status.Bogus"
   },
@@ -1265,9 +1234,7 @@
   "CIRENAICA": {
     "countries": " Cyrenaica."
   },
-  "CIRENAICA(overprintonstampsofTripolitania)": {
-    "countries": " Cyrenaica, airmails (1932)."
-  },
+  
   "CLAUSLAND": {
     "countries": " Christmas fantasy labels created by Maggie Kate.Bogus"
   },
@@ -1358,7 +1325,7 @@
   "COMORES": {
     "countries": " Comoro Islands."
   },
-  "COMPADEMOZAMBIQUE(overprintonstampsofMozambique)": {
+  "COMPADEMOZAMBIQUE": {
     "countries": " Mozambique Company (1892)."
   },
   "COMPANHIADEMOZAMBIOUE": {
@@ -1430,7 +1397,7 @@
   "CONSUMPTIVEHOMES": {
     "countries": " New South Wales, semipostals."
   },
-  "CONTRALAFAIM(overprintonstampsofRwanda)": {
+  "CONTRALAFAIM": {
     "countries": " Ruanda-Urundi [Against Hunger]."
   },
   "CONTRASELLO": {
@@ -1469,12 +1436,10 @@
   "COREE": {
     "countries": " Korea, on stamps printed in Paris (1902-3)."
   },
-  "CORFU(overprintonstampsofGreece)": {
+  "CORFU": {
     "countries": " Corfu- Italian occupation (1941)."
   },
-  "CORFU": {
-    "countries": " Corfu- Italian occupation (1923)."
-  },
+ 
   "COROCO": {
     "countries": " State near Chile used in book Clue of the Postage Stamp by Arthur Bray in 1913. Bogus stamp affixed to cover of book.Bogus"
   },
@@ -1727,11 +1692,8 @@
   "DR": {
     "countries": " South Australia, officials (1868-74) [Deed Registry]."
   },
-  "DBL(overprintinscriptlettersonstampsofRussia)": {
-    "countries": " Far Eastern Republic (1920)."
-  },
-  "DBL(withadditionaloverprintofthreebars)": {
-    "countries": " Siberia."
+  "DBL": {
+    "countries": " Far Eastern Republic (1920) or Siberia"
   },
   "DLO": {
     "countries": " US, dead letter office."
@@ -1739,7 +1701,7 @@
   "DAGESTAN": {
     "countries": " Bogus Russian local overprint.Bogus"
   },
-  "DAINIPPON2602…(overprintonstampsofMalaya/States)": {
+  "DAINIPPON": {
     "countries": " Malaya- Japanese occupation [Empire of Japan]."
   },
   "DALMACIJA,DALMATIA": {
@@ -1775,19 +1737,19 @@
   "DDR": {
     "countries": " German Democratic Republic (East Germany)."
   },
-  "DE(overprintonstampsofEcuador)": {
+  "DE": {
     "countries": " Ecuador- Tunguraugua."
   },
   "DELEON": {
     "countries": " Ecuador, control mark to prevent unmarked use (1902)"
   },
-  "DEOFICIO(overprintonstampsofPeruorElSalvador)": {
+  "DEOFICIO": {
     "countries": " Peru or El Salvador, officials."
   },
-  "DEB'SCOLONYPOSTAGE": {
+  "DEBSCOLONYPOSTAGE": {
     "countries": " Fantasy from American Journal of Philately.Bogus"
   },
-  "DECRETODE27JUNI’O1870(overprintonEscuelasstamps)": {
+  "DECRETODE": {
     "countries": " Venezuela."
   },
   "DEDEAGH": {
@@ -1887,11 +1849,9 @@
     "countries": " Diego-Suarez (1892-6)."
   },
   "DIENST": {
-    "countries": " German language countries, officials [Service]."
+    "countries": " Netherlands Indies, officials (1911) [Service] or German language countries, officials [Service]."
   },
-  "DIENST(overprintonstampsofNetherlands)": {
-    "countries": " Netherlands Indies, officials (1911) [Service]."
-  },
+  
   "DIENSTSACHE": {
     "countries": " Luxemberg, official stamps."
   },
@@ -1916,21 +1876,19 @@
   "DIOS,UNIONYLIBERTAD": {
     "countries": " Honduras (1865) [God, Union and Liberty]."
   },
-  "DISTRICTO(overprintonstampsofArequipa)": {
+  "DISTRICTO": {
     "countries": " Peru- Cuzco (1881-5)."
   },
   "DIWIRUBLI": {
     "countries": " Latvia, 2 rubles."
   },
-  "DJ(overprintonstampsofObock)": {
+  "DJ": {
     "countries": " Somali Coast (1894-1902)."
   },
   "DJIBOUTI": {
     "countries": " Somali Coast."
   },
-  "DJIBOUTI(overprintonstampsofObock)": {
-    "countries": " Somali Coast (1894-1902)."
-  },
+ 
   "DM(currencyoverprint)": {
     "countries": " Danzig, officials [Dienst Marke]."
   },
@@ -1979,7 +1937,7 @@
   "DUCIEISLAND,DEPENDENCYOF": {
     "countries": " Pitcairn Island bogus overprint. DUCKSTADBogus"
   },
-  "DUITSCHOOSTAFRIKABELGISCHEBEZETTING(overprintonstampsofCongo)": {
+  "DUITSCHOOSTAFRIKABELGISCHEBEZETTING": {
     "countries": " German East Africa- Belgian occupation (1916-22)."
   },
   "DURAZZO": {
@@ -1988,21 +1946,14 @@
   "DUTTIA": {
     "countries": " India- Duttia (1893-1921)."
   },
-  "E(overprintonstampsofBavaria)": {
-    "countries": " German States- Bavaria, officials [Eisenbahn (railway)]."
-  },
   "E": {
-    "countries": " South Australia, officials (1868-74) [Engineer]."
+    "countries": " German States- Bavaria, officials [Eisenbahn (railway)] or   South Australia, officials (1868-74) [Engineer]."
   },
+  
   "EB": {
     "countries": " South Australia, officials (1868-74) [Education Board]."
   },
-  "E?": {
-    "countries": " Cilicia- Greek occupation."
-  },
-  "E??": {
-    "countries": " Greece- Dodecanese Islands."
-  },
+ 
   "EAF": {
     "countries": " East Africa Force (1943-6), Somalia [East Africa Force]."
   },
@@ -3296,7 +3247,7 @@
   "IMPERIALBRITISHEASTAFRICACOMPANY": {
     "countries": " British East Africa."
   },
-  "IMPERIOCOLONIALPORTUGUES(nocolonyname)": {
+  "IMPERIOCOLONIALPORTUGUES": {
     "countries": " Portuguese Africa, postage dues, 1945."
   },
   "IMPERIODOBRASIL": {
