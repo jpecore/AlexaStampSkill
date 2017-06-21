@@ -1,0 +1,11 @@
+GetStampIDIntent {letters}
+GetStampIDIntent What country has the letters {letters}
+GetStampIDIntent What country has {letters}
+GetStampIDIntent What country is {letters}
+getStampValue What year was the {value} cent {topic} 
+getStampValue What year was {value} cent {topic} 
+getStampValue When was {value} cent {topic} issued on
+getStampValue When was the {value} cent {topic} issued on
+getStampValue When was {value} cent {topic} issued
+getStampValue When was {topic} issued on
+getStampValue When was {topic} issued

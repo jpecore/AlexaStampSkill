@@ -1,0 +1,35 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "letters",
+          "type": "LIST_OF_LETTERS"
+        }
+      ],
+      "intent": "GetStampIDIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "value",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "topic",
+          "type": "AMAZON.FictionalCharacter"
+        }
+      ],
+      "intent": "getStampValue"
+    }
+  ]
+}
