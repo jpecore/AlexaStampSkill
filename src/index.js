@@ -89,6 +89,9 @@ StampSkill.prototype.intentHandlers = {
 	"getStampValue" : function(intent, session, response) {
 		handleGetStampValueIntentRequest(intent, session, response);
 	},
+	"getStampTerm" : function(intent, session, response) {
+		handleGetStampTermIntentRequest(intent, session, response);
+	},
 
 	"AMAZON.HelpIntent" : function(intent, session, response) {
 		var speechText = "You can ask what what country a stamp is from by spelling some of the words on the stamp. What words are on the stamp?";
@@ -269,6 +272,75 @@ function handleGetStampValueIntentRequest(intent, session, response) {
 	)
 };
  
+
+
+function handleGetStampTermIntent(intent, session, response) {
+	var termSlot = intent.slots.term;
+
+	var sessionAttributes = {};
+	var repromptText = "I did not hear you. what?";
+	var speechText = "";
+	var cardTitle = "Stamp Term";
+	var cardContent = "";
+	var month = "";
+
+	console.log(" termSlot.value = " + termSlot.value);
+
+	// replace all the whitespace of the spelt out word
+	var term = termSlot.value;
+	//words = words.replace(/ /g, '');
+	//words = words.replace(/\./g, '');
+
+	console.log(" term = " + term);
+
+	// load json file of terms
+	 
+	var GLOSSARY = require('./glossery.json');
+	var key = 'Margin'
+	console.log('GLOSSARY.Letterpress.def = '
+			+ GLOSSARY[key].def);
+	
+
+	var fs = require('fs');
+	// var ids = JSON.parse(fs.readFileSync('./stampids.json', 'utf8'));
+	var glossary = JSON.parse(fs.readFileSync('./glossery.json', 'utf8'));
+
+	//console.log("Output Content : \n" + glossary);
+
+	var terms = iswsc[term];
+
+	console.log(" terms = " + terms);
+
+	if (ids) {
+		speechText = speechText + " : "
+
+		if (terms.def) {
+			speechText = speechText + terms.def;
+		}
+		// for (i = 0; i < ids.countries.length; i++) {
+		// speechText = speechText + ids.countries[i];
+		// speechText = speechText + ids.countries[;
+		// }
+	} else {
+		speechText = "Sorry, I could not find that term. "
+	}
+
+	var speechOutput = {
+		speech : "<speak>" + speechText + "</speak>",
+		type : AlexaSkill.speechOutputType.SSML
+	};
+	var repromptOutput = {
+		speech : repromptText,
+		type : AlexaSkill.speechOutputType.PLAIN_TEXT
+	};
+
+	session.attributes = sessionAttributes;
+
+	cardContent = speechOutput + "  (link to Colnet Country page coming soon) "
+	console.log(" StampID: handleGetStampIDIntent");
+	response.tell(speechOutput, repromptOutput, cardTitle,cardContent);
+
+}
   
 function getStampValueTopicPage(url, eventCallback) {
 	console.log("in getStampValueTopicPage");

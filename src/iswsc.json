@@ -284,9 +284,6 @@
   "ANKARA": {
     "countries": " Turkish capital with stamps issued after WW II by Nationalist Revolutionists.Bogus"
   },
-  "ANNA(currencysurchargedonFrenchstamps)": {
-    "countries": " France- Offices in Zanzibar."
-  },
   "ANNA": {
     "countries": " Muscat &amp; Oman. or British East Africa, India, Indian States, Mesopotamia, Zanzibar, Pakistan "
   },
@@ -386,7 +383,10 @@
   "ATLANTIUM,EMPIREOF": {
     "countries": " unrecognized secessionist &amp;quot;state&amp;quot; in Australia. web siteBogus"
   },
-  "ATT(S)(currencysurchargesonstampsofSiam)": {
+  "ATT(S)": {
+    "countries": " Thailand (1893-1908)."
+  },
+   "ATTS": {
     "countries": " Thailand (1893-1908)."
   },
   "AUCKLANDISLANDS": {
@@ -1082,10 +1082,10 @@
   "CEFOLONIAEITACA": {
     "countries": " Ionian Islands- Italian occupation (1941)."
   },
-  "CENT(S)(currencyoverprint)": {
+  "CENTS": {
     "countries": " Russia- Offices in China (1901-22)."
   },
-  "CENTAVO(S)": {
+  "CENTAVOS": {
     "countries": " South and Central American countries."
   },
   "CENTENAIREALGERIE": {
@@ -1097,28 +1097,23 @@
   "CENTENARIODESANTONIOINHAMBANRMDCCCXCV": {
     "countries": " (overprint on stamps of Mozambique)Inhambane (1895) [Centenary of St. Anthony]."
   },
-  "CENTESIMI(currencyoverprintonstampsofAustria)": {
+  "CENTESIMI": {
     "countries": " Italy- Austrian occupation (1918)."
   },
-  "CENTESIMI(currencyoverprintonstampsofBosniaandHerzegovina)": {
-    "countries": " Italy- Austrian occupation, postage dues and special deliveries (1918)."
-  },
-  "CENTESIMI": {
-    "countries": " Italy, Italian Colonies"
-  },
+
   "CENTESIMIDICORONA": {
     "countries": " Dalmatia (1921-22)."
   },
-  "CENTESIMO(S)": {
+  "CENTESIMO": {
     "countries": " Italy, Uruguay."
   },
-  "CENTIMES(currencyoverprintonstampsofAustria)": {
+  "CENTIMES": {
     "countries": " Austria- Offices in Crete (1903-7)."
   },
   "CENTIMES": {
     "countries": " Germany- Offices in Turkey (1908)."
   },
-  "CENTIMOS(currencynocountryname)": {
+  "CENTIMOS": {
     "countries": " Spain."
   },
   "CENTIMOS": {
@@ -1154,7 +1149,7 @@
   "CFA": {
     "countries": " Reunion [Communaute Francaise d’Afrique]."
   },
-  "CH(currencyfollowedbyorientalcharacters)": {
+  "CH": {
     "countries": " Korea."
   },
   "CHTAXEOMFSYRIE": {
@@ -1864,8 +1859,8 @@
   "DINAR(S)": {
     "countries": " Iran."
   },
-  "DINERO(currencynocountryname)": {
-    "countries": " Peru (1858-72)."
+  "DINERO": {
+    "countries": " Peru (1858-72) currency "
   },
   "DIOSPATRIALIBERTAD": {
     "countries": " Dominican Republic [God, Fatherland, Liberty]."
@@ -1889,13 +1884,13 @@
     "countries": " Somali Coast."
   },
  
-  "DM(currencyoverprint)": {
+  "DM": {
     "countries": " Danzig, officials [Dienst Marke]."
   },
   "DOLAND": {
     "countries": " Donald Evans issue.Bogus"
   },
-  "DOLLAR(currencyoverprintonstampsofRussia)": {
+  "DOLLAR": {
     "countries": " Russia- Offices in China (1917)."
   },
   "DONRIVERRAILWAYSOCIETY": {
@@ -2440,13 +2435,13 @@
   "FILLER": {
     "countries": " Hungary."
   },
-  "FILS(currency,nocountryname)": {
+  "FILS": {
     "countries": " Iran or Jordan."
   },
-  "FIUME(overprintonstampsofHungary)": {
+  "FIUME": {
     "countries": " Fiume (1918-9)."
   },
-  "FLUCHTLINGSHILFEMONTENEGRO)": {
+  "FLUCHTLINGSHILFEMONTENEGRO": {
     "countries": " Montenegro, German Occupation semipostals (1944)."
   },
   "FLUGFRIMERKI": {
@@ -2545,10 +2540,10 @@
   "FRANK": {
     "countries": " Albania."
   },
-  "FRANKEERZEGEL2½CENT(currencyoverprintonfiscalstamps)": {
+  "FRANKEERZEGELCENT": {
     "countries": " Surinam, postally valid."
   },
-  "FRANKEERZEGEL2½CENT(currencyoverprintonmarineinsurancestampsofNetherlands)": {
+  "FRANKEERZEGEL": {
     "countries": " Curacao, postally valid."
   },
   "FRANQUEODEFICIENTE": {
@@ -4006,7 +4001,7 @@
   "LEGIPOSTA": {
     "countries": " Hungary, airmails."
   },
-  "LEI(currencyoverprintonAustrianstamps)": {
+  "LEI": {
     "countries": " Romania- Austrian occupation (1917-8)."
   },
   "LEMNORY": {
@@ -4114,7 +4109,7 @@
   "LIPSO": {
     "countries": " Italy- Aegean Islands- Lisso (1912-32)."
   },
-  "LIRE(currencyoverprintonstampsofAustria)": {
+  "LIRE": {
     "countries": " Italy- Austrian occupation (1918)."
   },
   "LIRE120DICORONA": {
@@ -4534,10 +4529,10 @@
   "MILITARPOST": {
     "countries": " Bosnia and Herzegovina."
   },
-  "MILL(currencysurchargeonstampsofFrance)": {
+  "MILL": {
     "countries": " France- Offices in Egypt (1921-8)."
   },
-  "MILLIEME(S)(currencysurchargeonstampsofFrance)": {
+  "MILLIEME": {
     "countries": " France- Offices in Egypt (1921-8)."
   },
   "MINAUE": {
@@ -5173,11 +5168,8 @@
   "P(backtotop)": {
     "countries": " Bogus"
   },
-  "p(currency,onstampswithnonameandqueen’shead)": {
-    "countries": " Great Britain (1971-present) [Pence]."
-  },
-  "P(overprintonstampsofStraitsSettlements)": {
-    "countries": " Malaya- Perak (1878)."
+  "P": {
+    "countries": " Great Britain (1971-present) [Pence].   Malaya- Perak (1878)"
   },
   "PA": {
     "countries": " South Australia, officials (1868-74) [Protector of Aboriginees]."
@@ -5287,14 +5279,11 @@
   "PARAOSPOBRES": {
     "countries": " Portugal and Azores, postal tax stamps (1915) [For the Poor]."
   },
-  "PARA(S)(currencyoverprintonstampsofAustria)": {
-    "countries": " Austria- Offices in Turkey."
+  "PARA": {
+    "countries": " Austria- Offices in Turkey. or Egypt or Turkey or Russia- Offices in Turkey" 
   },
-  "PARA(S)": {
-    "countries": " Egypt, Turkey."
-  },
-  "PARA(S)(currencyoverprintonstampsofRussia)": {
-    "countries": " Russia- Offices in Turkey."
+  "PARAS": {
+    "countries": " Austria- Offices in Turkey. or Egypt or Turkey or Russia- Offices in Turkey."
   },
   "PARDOESDAGRANDGUERRA": {
     "countries": " Portugal and Azores, postal tax due stamps [Comrades of the Great War]."
@@ -5404,16 +5393,16 @@
   "PESA": {
     "countries": " German East Africa (1893)."
   },
-  "PESETAS(currency,nocountryname)": {
+  "PESETAS": {
     "countries": " Spain."
   },
   "PETERSPORT": {
     "countries": " Antarctic fantasy issue.Bogus"
   },
-  "PE??A?KA?b??A???": {
-    "countries": " Bulgaria [Bulgarian Republic]."
+  "PF": {
+    "countries": " Estonia- German occupation (1918)."
   },
-  "PForPFG(currency,overprintonstampsofRussia)": {
+    "PFG": {
     "countries": " Estonia- German occupation (1918)."
   },
   "PFENNIG": {
@@ -5425,7 +5414,7 @@
   "PHILIPPINES": {
     "countries": " U.S. administration of the Philippines."
   },
-  "PIASTER(currencyoverprintonstampsofAustria)": {
+  "PIASTER": {
     "countries": " Austria- Offices in Turkey."
   },
   "PIASTER": {
@@ -6184,7 +6173,7 @@
   "REIS": {
     "countries": " Portugal, Portuguese Colonies, Brazil."
   },
-  "REISwithCORREIO(currency,nocountryname)": {
+  "REISCORREIO": {
     "countries": " Portugal. (1853-64)."
   },
   "REJISTRO": {
@@ -6418,7 +6407,7 @@
   "RIOS19(overprintonstampsofEcuador)": {
     "countries": " Ecuador, Los Rios provincial control marks (1902)."
   },
-  "RIS(currencyoverprintonstampsofNetherlandsIndies)": {
+  "RIS": {
     "countries": " Indonesia (1950-1) [Republik Indonesia Serikat]."
   },
   "RIZEH": {
