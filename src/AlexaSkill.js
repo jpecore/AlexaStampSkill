@@ -146,6 +146,20 @@ Response.prototype = (function () {
                 content: options.cardContent
             };
         }
+        
+        if (options.cardSmallImageURL && options.cardLargeImageURL) {
+            alexaResponse.card = {
+                type: "Standard",
+                title: options.cardTitle,
+                text: options.cardContent,
+                image: {
+                    smallImageUrl: options.cardSmallImageURL,
+                    largeImageUrl: options.cardLargeImageURL
+                }
+            };
+        }
+        
+        
         var returnResult = {
                 version: '1.0',
                 response: alexaResponse
@@ -188,6 +202,30 @@ Response.prototype = (function () {
                 reprompt: repromptSpeech,
                 cardTitle: cardTitle,
                 cardContent: cardContent,
+                shouldEndSession: false
+            }));
+        },
+        tellWithPictureCard: function(speechOutput, repromptSpeech, cardTitle, cardContent, smallImageURL, largeImageURL) {
+            this._context.succeed(buildSpeechletResponse({
+                session: this._session,
+                output: speechOutput,
+                reprompt: repromptSpeech,
+                cardTitle: cardTitle,
+                cardContent: cardContent,
+                cardSmallImageURL: smallImageURL,
+                cardLargeImageURL: largeImageURL,
+                shouldEndSession: true
+            }));
+        },
+        askWithPictureCard: function(speechOutput, repromptSpeech, cardTitle, cardContent, smallImageURL, largeImageURL) {
+            this._context.succeed(buildSpeechletResponse({
+                session: this._session,
+                output: speechOutput,
+                reprompt: repromptSpeech,
+                cardTitle: cardTitle,
+                cardContent: cardContent,
+                cardSmallImageURL: smallImageURL,
+                cardLargeImageURL: largeImageURL,
                 shouldEndSession: false
             }));
         }

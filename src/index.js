@@ -18,8 +18,6 @@ var APP_ID = 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'; // Stamp
 var https = require('https');
 var http = require('http');
 
-
-
 var urlColnet = "http://colnect.com";
 var urlStampLlst = '/en/stamps/list/';
 
@@ -89,7 +87,7 @@ StampSkill.prototype.intentHandlers = {
 	"getStampValue" : function(intent, session, response) {
 		handleGetStampValueIntentRequest(intent, session, response);
 	},
-	"getStampTerm" : function(intent, session, response) {
+	"GetStampTerm" : function(intent, session, response) {
 		handleGetStampTermIntentRequest(intent, session, response);
 	},
 
@@ -133,9 +131,10 @@ function getWelcomeResponse(response) {
 	// add those here.
 
 	var repromptText = "I did not understand. What did you say?";
-	var speechText = "<p>Welcome to the Stamp ID skill. "
-			+ "I can help you find out which country a stamp is from by the words on them."
-			+ " What are some words on the stamp, please spell them out for me?</p>";
+	var speechText = "<p>Welcome to the Stamp Collector skill. "
+			+ "I can help you find a stamp term by saying something like: What is Perforation?"
+			+ "I can also find out which country a stamp is from by the words that are on them by saying: What country has the letters c. t. o. t. on their stamps? "
+			+ "How can I help you today?</p>";
 
 	var speechOutput = {
 		speech : "<speak>" + speechText + "</speak>",
@@ -186,7 +185,8 @@ function handleGetStampIDIntent(intent, session, response) {
 	console.log(" ids = " + ids);
 
 	if (ids) {
-		speechText = speechText + "Possible matches: "
+		speechText = speechText
+				+ "According to the I S W S C World Wide Stamp Identifier, possible matches are: "
 
 		if (ids.countries) {
 			speechText = speechText + ids.countries;
@@ -196,7 +196,7 @@ function handleGetStampIDIntent(intent, session, response) {
 		// speechText = speechText + ids.countries[;
 		// }
 	} else {
-		speechText = "Sorry, I could not find it. "
+		speechText = "Sorry, I could not find country with stamps that have those letters on it. "
 	}
 
 	var speechOutput = {
@@ -212,69 +212,81 @@ function handleGetStampIDIntent(intent, session, response) {
 
 	cardContent = speechOutput + "  (link to Colnet Country page coming soon) "
 	console.log(" StampID: handleGetStampIDIntent");
-	response.tell(speechOutput, repromptOutput, cardTitle,cardContent);
+	response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
 
 }
 
 function handleGetStampValueIntentRequest(intent, session, response) {
 	console.log("in handleGetStampValueIntentRequest");
 	var topicSlot = intent.slots.topic;
-	var topic = topicSlot.value.replace(/ /gm, '+')  ;
+	var topic;
 	var valueSlot = intent.slots.value;
 	var repromptText = "With Stamp year loookup, you can get the year a specif stamp was issued on . "
-			+ "For example, you could say what year was 32 cent Bobby Jones issued on.";
+			+ "For example, you could say what year was 32 cent Bobby Jones issued on. What stamp would you like to look up?";
 	var sessionAttributes = {};
 	var postfixContent = "";
 	var cardContent = "";
 	var cardTitle = "Stamp Year ";
 	var stampURL = "";
 
+	if (topicSlot) {
+		topic = topicSlot.value.replace(/ /gm, '+');
+	}
+
+	// var smallImageUrl =
+	// 'https://upload.wikimedia.org/wikipedia/commons/1/16/Modry_mauritius.jpg',
+	// largeImageUrl =
+	// 'https://upload.wikimedia.org/wikipedia/commons/1/16/Modry_mauritius.jpg'
+
 	getStampValueTopic(
-		valueSlot.value,
-		topic,	   
-		function(stringResult) {	
-			
-			console.log ('stringResult: ' + stringResult);
-			stampULR = stringResult;
-			getStampValueTopicPage (
-				stringResult,
-				function(stringResult)  {
-					var speechText = "", i;
-					sessionAttributes.text = stringResult;
-					console.log("stringResult =  " + stringResult);
-					session.attributes = sessionAttributes;
-					if (stringResult.length === 0) {
-						speechText = "Sorry. There is a problem connecting to Colnet at this time. Please try again later.";
-						cardContent = speechText;
-						response.tell(speechText);
-					} else {
-			
-						cardTitle = intent.slots.value.value + " cent " +  intent.slots.topic.value ;
-						cardContent = stringResult +  "\n " + stampULR;
-						speechText = speechText + stringResult;
-			
-						var speechOutput = {
-							speech : "<speak>" + speechText + "</speak>",
-							type : AlexaSkill.speechOutputType.SSML
-						};
-						var repromptOutput = {
-							speech : repromptText,
-							type : AlexaSkill.speechOutputType.PLAIN_TEXT
-						};
-						response.tellWithCard(speechOutput, cardTitle, cardContent);
-			
-						// response.askWithCard(speechOutput, repromptOutput,
-						// cardTitle, cardContent);
-					}  
-				}
-			)			 
-		} 
-	)
+			valueSlot.value,
+			topic,
+			function(stringResult) {
+
+				console.log('stringResult: ' + stringResult);
+				stampULR = stringResult;
+				getStampValueTopicPage(
+						stringResult,
+						function(stringResult) {
+							var speechText = "", i;
+							sessionAttributes.text = stringResult;
+							console.log("stringResult =  " + stringResult);
+							session.attributes = sessionAttributes;
+							if (stringResult.length === 0) {
+								speechText = "Sorry. There is a problem connecting to Colnect at this time. Please try again later.";
+								cardContent = speechText;
+								response.tell(speechText);
+							} else {
+
+								cardTitle = intent.slots.value.value + " cent "
+										+ intent.slots.topic.value;
+								cardContent = stringResult + "\n " + stampULR;
+								speechText = speechText + stringResult;
+
+								var speechOutput = {
+									speech : "<speak>" + speechText
+											+ "</speak>",
+									type : AlexaSkill.speechOutputType.SSML
+								};
+								var repromptOutput = {
+									speech : repromptText,
+									type : AlexaSkill.speechOutputType.PLAIN_TEXT
+								};
+								response.tellWithCard(speechOutput, cardTitle,
+										repromptText, cardContent);
+								// response.tellWithPictureCard(speechOutput,
+								// cardTitle, repromptText, cardContent,
+								// smallImageUrl, largeImageUrl);
+
+								// response.askWithCard(speechOutput,
+								// repromptOutput,
+								// cardTitle, cardContent);
+							}
+						})
+			})
 };
- 
 
-
-function handleGetStampTermIntent(intent, session, response) {
+function handleGetStampTermIntentRequest(intent, session, response) {
 	var termSlot = intent.slots.term;
 
 	var sessionAttributes = {};
@@ -283,46 +295,47 @@ function handleGetStampTermIntent(intent, session, response) {
 	var cardTitle = "Stamp Term";
 	var cardContent = "";
 	var month = "";
+	var GLOSSARY = require('./glossery.json');
+	var fs = require('fs');
 
 	console.log(" termSlot.value = " + termSlot.value);
 
 	// replace all the whitespace of the spelt out word
 	var term = termSlot.value;
-	//words = words.replace(/ /g, '');
-	//words = words.replace(/\./g, '');
+	// words = words.replace(/ /g, '');
+	// words = words.replace(/\./g, '');
 
-	console.log(" term = " + term);
+	// term = term.charAt(0).toUpperCase() + term.slice(1);
+	if (term) {
+		term = term.toLowerCase(); // glossary.json is all in lowercase.
+		console.log(" term = " + term);
+		// load json file of terms
+		// var key = 'Margin'
+		// console.log('GLOSSARY.Letterpress.def = '
+		// + GLOSSARY[key].def);
+		// var ids = JSON.parse(fs.readFileSync('./stampids.json', 'utf8'));
+		var glossary = JSON.parse(fs.readFileSync('./glossery.json', 'utf8'));
 
-	// load json file of terms
-	 
-	var GLOSSARY = require('./glossery.json');
-	var key = 'Margin'
-	console.log('GLOSSARY.Letterpress.def = '
-			+ GLOSSARY[key].def);
-	
+		// console.log("Output Content : \n" + glossary);
 
-	var fs = require('fs');
-	// var ids = JSON.parse(fs.readFileSync('./stampids.json', 'utf8'));
-	var glossary = JSON.parse(fs.readFileSync('./glossery.json', 'utf8'));
+		var terms = glossary[term];
 
-	//console.log("Output Content : \n" + glossary);
+		console.log(" terms = " + terms);
 
-	var terms = iswsc[term];
-
-	console.log(" terms = " + terms);
-
-	if (ids) {
-		speechText = speechText + " : "
-
-		if (terms.def) {
-			speechText = speechText + terms.def;
+		if (terms) {
+			if (terms.def) {
+				speechText = speechText + "According to linns.com, " + term
+						+ " is " + terms.def;
+			}
+			// for (i = 0; i < ids.countries.length; i++) {
+			// speechText = speechText + ids.countries[i];
+			// speechText = speechText + ids.countries[;
+			// }
+		} else {
+			speechText = "Sorry, I could not find the term: " + term + ".";
 		}
-		// for (i = 0; i < ids.countries.length; i++) {
-		// speechText = speechText + ids.countries[i];
-		// speechText = speechText + ids.countries[;
-		// }
 	} else {
-		speechText = "Sorry, I could not find that term. "
+		speechText = "Sorry, I did not hear a term. "
 	}
 
 	var speechOutput = {
@@ -337,32 +350,33 @@ function handleGetStampTermIntent(intent, session, response) {
 	session.attributes = sessionAttributes;
 
 	cardContent = speechOutput + "  (link to Colnet Country page coming soon) "
-	console.log(" StampID: handleGetStampIDIntent");
-	response.tell(speechOutput, repromptOutput, cardTitle,cardContent);
+	console.log(" Stamp: handleGetStampIDIntent");
+	response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
 
 }
-  
+
 function getStampValueTopicPage(url, eventCallback) {
 	console.log("in getStampValueTopicPage");
+
 	console.log("url = [" + url + "]");
 	var urlColnet = "colnect.com";
 	var urlStampLlst = '/en/stamps/list/';
 
- //  var valueTopicPath =  urlStampLlst + 'face_value/' + value + '-' + value + '/item_name/' + topic;
+	// var valueTopicPath = urlStampLlst + 'face_value/' + value + '-' + value +
+	// '/item_name/' + topic;
 
-	///console.log("valueTopicPath =  " + valueTopicPath);
-	
-	  
+	// /console.log("valueTopicPath = " + valueTopicPath);
+
 	https.get(url, function(res) {
 		var body = '';
 
 		res.on('data', function(chunk) {
 			body += chunk;
 		});
-		//console.log("body =  " + body);
+		// console.log("body = " + body);
 		res.on('end', function() {
-			var stringResult = parseStampValueTopicPage(body,url);
-			 
+			var stringResult = parseStampValueTopicPage(body, url);
+
 			eventCallback(stringResult);
 
 		});
@@ -370,65 +384,67 @@ function getStampValueTopicPage(url, eventCallback) {
 		console.log("Got error: ", e);
 	});
 }
-function parseStampValueTopicPage(inputText,url) {
+function parseStampValueTopicPage(inputText, url) {
 
-	//inputText = inputText.replace(/<(?:.|\n)*?>/gm, '') // Remove HTML
-	//console.log('inputText = ' + inputText);
+	// inputText = inputText.replace(/<(?:.|\n)*?>/gm, '') // Remove HTML
+	// console.log('inputText = ' + inputText);
 	DateIndex = inputText.indexOf("Date:");
- 
-	var RetText = inputText.substring(DateIndex+31, DateIndex+111 ) ;
+
+	var RetText = inputText.substring(DateIndex + 31, DateIndex + 111);
 	console.log("RetText = " + RetText);
-	RetText = RetText.substring(0, RetText.indexOf('</div>') );
-			
-			
+	RetText = RetText.substring(0, RetText.indexOf('</div>'));
+
 	if (RetText.length > 0) {
-		RetText = 'That stamp was issued on  ' + RetText ;
-		//retArr.push(RetText);
-		// now get the page  
-		
+		RetText = 'That stamp was issued on  ' + RetText;
+		// retArr.push(RetText);
+		// now get the page
+
 		return RetText
 	}
 
 	RetText = 'Hmmm... there was some problem contacting my source colnet.';
 
-//	retArr.push(RetText);
+	// retArr.push(RetText);
 
 	return RetText;
 }
 
-
 function getStampValueTopic(value, topic, eventCallback) {
-	
 
 	console.log("in getStampValueTopic");
-	console.log ('value and topic = ' + value + " " + topic);
+	console.log('value and topic = ' + value + " " + topic);
+
 	var urlColnet = "colnect.com";
 	var urlStampLlst = '/en/stamps/list/';
 
-	var valueTopicPath =  urlStampLlst + 'face_value/' + value + '-' + value + '/item_name/' + topic;
+	var valueTopicPath = urlStampLlst + 'face_value/' + value + '-' + value
+			+ '/item_name/' + topic;
 
-	//console.log("valueTopicPath =  " + valueTopicPath);
-	
-	 var aragoSearchPath = '/search?q='+ value + 'c+' + topic + '+single++site:arago.si.edu';
-	 
-		
+	// console.log("valueTopicPath = " + valueTopicPath);
+
+	var aragoSearchPath = '/search?q=' + value + 'c+' + topic
+			+ '+single++site:arago.si.edu';
+
 	console.log('aragoSearchPath = ' + aragoSearchPath);
-	var request_options = 
-	{
-	    host: 'www.google.com',
-	    headers: { 'User-Agent': 'Mozilla/5.0'} ,
-	    path: aragoSearchPath
+
+	var request_options = {
+		host : 'www.google.com',
+		headers : {
+			'User-Agent' : 'Mozilla/5.0'
+		},
+		path : aragoSearchPath
 	};
- 
-			
+
 	https.get(request_options, function(res) {
 		var body = '';
 
 		res.on('data', function(chunk) {
 			body += chunk;
+			// console.log("body1 = " + body);
 		});
-		//console.log("body =  " + body);
+		// console.log("body2 = " + body);
 		res.on('end', function() {
+			// console.log("body3 = " + body);
 			var stringResult = parseStampValueTopic(body);
 			console.log('getStampValueTopic returning: ' + stringResult)
 			eventCallback(stringResult);
@@ -440,32 +456,32 @@ function getStampValueTopic(value, topic, eventCallback) {
 
 function parseStampValueTopic(inputText) {
 	console.log('in parseStampValueTopic');
-	//inputText = inputText.replace(/<(?:.|\n)*?>/gm, '') // Remove HTML
+	// inputText = inputText.replace(/<(?:.|\n)*?>/gm, '') // Remove HTML
 	// console.log('inputText' + inputText);
 	LinkIndex = inputText.indexOf("://arago.si.edu/record_");
-	
-	var RetText = inputText.substring(LinkIndex, LinkIndex + 77) ;
-	
+
+	var RetText = inputText.substring(LinkIndex, LinkIndex + 77);
+
 	if (LinkIndex == -1) {
 		return "Could not find a record";
 	}
 	var htmlIndex = RetText.indexOf(".html");
-	
-	RetText = RetText.substring(0,  htmlIndex +5);
+
+	RetText = RetText.substring(0, htmlIndex + 5);
 	RetText = 'https' + RetText;
 	console.log('RetText is ' + RetText);
-			
+
 	if (RetText.length > 0) {
-		 
-		//retArr.push(RetText);
-		// now get the page  
-		
+
+		// retArr.push(RetText);
+		// now get the page
+
 		return RetText
 	}
 
 	RetText = 'Hmmm... there was some problem contacting my source colnet.';
 
-//	retArr.push(RetText);
+	// retArr.push(RetText);
 
 	return RetText;
 }
