@@ -14,10 +14,10 @@ Stamp terms
 Stamp identification by letters on the stamp.
  
 ## Examples:
-Alexa, ask stamp collector what country has the letters C T O T  on their stamps?
+Alexa, ask stamp collector what country has the letters C T O T  on their stamps?  
 According to the I S W S C World Wide Stamp Identifier, possible matches are:  Bulgaria. 
 
-Alexa, ask stamp collector  to define letterpress?
+Alexa, ask stamp collector  to define letterpress?  
 According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
 
 
