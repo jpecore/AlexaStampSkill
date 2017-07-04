@@ -10,8 +10,8 @@ Stamp collector (philatelist) is your stamp collecting assistant.
 Ask stamp collector for help you may need while working on your stamp collection.
 
 # Version 0.1  
-Stamp terms
-Stamp identification by letters on the stamp.
+* Stamp terms
+* Stamp identification by letters on the stamp.
  
 ## Examples:
 Alexa, ask stamp collector what country has the letters C T O T  on their stamps?  
