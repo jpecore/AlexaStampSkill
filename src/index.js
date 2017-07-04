@@ -73,7 +73,11 @@ StampSkill.prototype.eventHandlers.onSessionEnded = function(
 StampSkill.prototype.intentHandlers = {
 
 	"AMAZON.HelpIntent" : function(intent, session, response) {
-		var speechText = "You can ask what what country a stamp is from by spelling some of the words on the stamp. What words are on the stamp?";
+		var speechText = "Stamp Collector can help you do many things." +
+				"To get the defintion of a stamp term, say something like: What is Perforation?" +
+				"To try and identify which country a stamp is from, spell some of the words like:   " +
+				"What country has the letters c. t. o. c." +
+				"Which command would you like to try? ";
 		var repromptText = "I did not understand you. Did you try spelling the words on the stamp? What words are on the stamp?";
 		var speechOutput = {
 			speech : speechText,
@@ -124,6 +128,9 @@ StampSkill.prototype.intentHandlers = {
 	},
 	"StoreUsernameIntent" : function(intent, session, response) {
 		handleStoreUsernameIntentRequest(intent, session, response);
+	},
+	"RandomTermIntent" : function(intent, session, response) {
+		handleRandomTermIntentRequest(intent, session, response);
 	}
 
 };
@@ -192,7 +199,8 @@ function handleGetStampIDIntent(intent, session, response) {
 
 	if (ids) {
 		speechText = speechText
-				+ "According to the I S W S C World Wide Stamp Identifier, possible matches for " + lettersSlot.value + " are: "
+				+ "According to the I S W S C World Wide Stamp Identifier, possible matches for "
+				+ lettersSlot.value + " are: "
 
 		if (ids.countries) {
 			speechText = speechText + ids.countries;
@@ -438,7 +446,7 @@ function getStampValueTopic(value, topic, eventCallback) {
 	console.log('value and topic = ' + value + " " + topic);
 
 	var urlColnect = "api.colnect.net";
-	var urlStampLlst = '/en/api/V48jkda0/list/cat/stamps/country/2669/currency/240/'; // US
+	var urlStampLlst = '/en/api/V48jkda0/list/cat/stamps/format/1/country/2669/currency/240/'; // US
 	// cents
 
 	http:
@@ -511,7 +519,7 @@ function handleGetStampCountryHistoryIntentRequest(intent, session, response) {
 		wikiPageUrl = wikiUrl + country;
 		getJsonHistoryWikipedia(wikiPageUrl, function(historyTextArray) {
 			var text = historyTextArray.pop();
-			 
+
 			session.attributes.historyArray = historyTextArray;
 			response.tell(text);
 			// console.log("historyText = " + historyText);
@@ -581,7 +589,6 @@ function parseJsonHistory(inputText) {
 		eventText = eventText.replace(/\\u2035\s*/g, '');
 		eventText = eventText.replace(/\\u005c\s*/g, '');
 		eventText = eventText.replace(/[^\.\w\s]/gi, '')
-		
 
 		startIndex = endIndex + delimiterSize;
 		retArr.push(eventText);
@@ -637,7 +644,7 @@ function handleStoreUsernameIntentRequest(intent, session, response) {
 				}
 			})
 
-};
+}
 
 function getUsernameRatings(username, eventCallback) {
 
@@ -692,6 +699,54 @@ function getUsernameRatings(username, eventCallback) {
 		console.log("Got error: ", e);
 	});
 }
+
+function handleRandomTermIntentRequest(intent, session, response) {
+	var sessionAttributes = {};
+	var repromptText = "I did not hear you. what?";
+	var speechText = "";
+	var cardTitle = "Random Stamp Term";
+	var cardContent = "";
+	var month = "";
+	var GLOSSARY = require('./glossery.json');
+	var fs = require('fs');
+	var glossary = JSON.parse(fs.readFileSync('./glossery.json', 'utf8'));
+
+	var rndNum = Math.floor(Math.random() * Object.keys(glossary).length);
+	
+	console.log ("Object.keys(glossary).length  = " + Object.keys(glossary).length);
+
+	console.log(" rndNum = " + rndNum);
+	
+	var terms = Object.keys(glossary)[rndNum];
+	
+	console.log(" terms = " + terms);
+	
+ 
+	
+
+	speechText = speechText + "According to linns.com, " + terms + " is "
+			+ glossary[terms].def;
+
+	// for (i = 0; i < ids.countries.length; i++) {
+	// speechText = speechText + ids.countries[i];
+	// speechText = speechText + ids.countries[;
+	// }
+	var speechOutput = {
+		speech : "<speak>" + speechText + "</speak>",
+		type : AlexaSkill.speechOutputType.SSML
+	};
+	var repromptOutput = {
+		speech : repromptText,
+		type : AlexaSkill.speechOutputType.PLAIN_TEXT
+	};
+
+	session.attributes = sessionAttributes;
+
+	cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
+	console.log(" Stamp: handleGetStampIDIntent");
+	response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
+
+} // end handleRandomTermIntentRequest
 
 // NO LONGER USED
 /*******************************************************************************
@@ -753,10 +808,7 @@ exports.handler = function(event, context) {
 };
 
 /*******************************************************************************
- * Amazon test event
- * 
- * 
- *  { "session": { "sessionId":
+ * Amazon test event { "session": { "sessionId":
  * "SessionId.2899baf0-ea1e-4307-a3e8-b25198ffc0d1", "application": {
  * "applicationId": "amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17" },
  * "attributes": {}, "user": { "userId":
