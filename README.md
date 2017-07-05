@@ -27,11 +27,11 @@ According to linns.com, letterpress is  printing done directly from the inked, r
 * Tell me a random stamp term.
 * Tell me about the postal history of {country}.
 
-*Stamp information (U.S.) 
-* Ask for information (e.g. year issued,) about a particular U.S. Stamp.  
-* What postage stamp were issued by the U.S. in {year}?
-* Display image of stamp on Alexa Cards
-* Colnect, online personal collection management, access (e.g. list/update your collection)
+* Stamp information (U.S.) 
+*  Ask for information (e.g. year issued,) about a particular U.S. Stamp.  
+*  What postage stamp were issued by the U.S. in {year}?
+*  Display image of stamp on Alexa Cards
+*  Colnect, online personal collection management, access (e.g. list/update your collection)
 
 
 

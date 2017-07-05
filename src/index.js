@@ -73,11 +73,11 @@ StampSkill.prototype.eventHandlers.onSessionEnded = function(
 StampSkill.prototype.intentHandlers = {
 
 	"AMAZON.HelpIntent" : function(intent, session, response) {
-		var speechText = "Stamp Collector can help you do many things." +
-				"To get the defintion of a stamp term, say something like: What is Perforation?" +
-				"To try and identify which country a stamp is from, spell some of the words like:   " +
-				"What country has the letters c. t. o. c." +
-				"Which command would you like to try? ";
+		var speechText = "Stamp Collector can help you do many things."
+				+ "To get the defintion of a stamp term, say something like: What is Perforation?"
+				+ "To try and identify which country a stamp is from, spell some of the words like:   "
+				+ "What country has the letters c. t. o. c."
+				+ "Which command would you like to try? ";
 		var repromptText = "I did not understand you. Did you try spelling the words on the stamp? What words are on the stamp?";
 		var speechOutput = {
 			speech : speechText,
@@ -131,6 +131,12 @@ StampSkill.prototype.intentHandlers = {
 	},
 	"RandomTermIntent" : function(intent, session, response) {
 		handleRandomTermIntentRequest(intent, session, response);
+	},
+	"CountriesNeededIntent" : function(intent, session, response) {
+		handleCountriesNeededIntentRequest(intent, session, response);
+	},
+	"CountriesNeededValidateIntent" : function(intent, session, response) {
+		handleCountriesNeededValidateIntentRequest(intent, session, response);
 	}
 
 };
@@ -171,11 +177,15 @@ function handleGetStampIDIntent(intent, session, response) {
 	var cardTitle = "Stamp ID";
 	var cardContent = "";
 	var month = "";
-
+	var words = "";
 	console.log(" lettersSlot.value = " + lettersSlot.value);
 
 	// replace all the whitespace of the spelt out word
-	var words = lettersSlot.value.toUpperCase();
+	
+	if (lettersSlot.value) {
+		words =  lettersSlot.value.toUpperCase();
+	};
+	 
 	words = words.replace(/ /g, '');
 	words = words.replace(/\./g, '');
 
@@ -210,7 +220,7 @@ function handleGetStampIDIntent(intent, session, response) {
 		// speechText = speechText + ids.countries[;
 		// }
 	} else {
-		speechText = "Sorry, I could not find country with stamps that have those letters on it. "
+		speechText = "Sorry, I could not find country with stamps that have those letters on it. Please try spelling the word again or try different words. "
 	}
 
 	var speechOutput = {
@@ -700,6 +710,186 @@ function getUsernameRatings(username, eventCallback) {
 	});
 }
 
+function getCAPI(urlPath, eventCallback) {
+
+	console.log("in getCAPI");
+	var urlColnect = "api.colnect.net";
+	var jsonResult = "";
+	console.log('urlPath = ' + urlPath);
+
+	var request_options = {
+		host : urlColnect,
+		headers : {
+			'User-Agent' : 'Mozilla/5.0'
+		},
+		path : urlPath
+	};
+
+	http.get(request_options, function(res) {
+		var body = '';
+		res.on('data', function(chunk) {
+			body += chunk;
+			// console.log("body1 = " + body);
+		});
+		// console.log("body2 = " + body);
+		res.on('end', function() {
+			// console.log("body3 = " + body);
+			jsonResult = JSON.parse(body);
+			if (jsonResult) {
+				jsonResult = JSON.parse(body);
+			}
+			// console.log('jsonResult = ' + jsonResult)
+			eventCallback(jsonResult);
+		});
+	}).on('error', function(e) {
+		console.log("Got error: ", e);
+	});
+}
+
+function handleCountriesNeededIntentRequest(intent, session, response) {
+
+	console.log("in handleCountriesNeededIntentRequest");
+	// var usernameSlot = intent.slots.username;
+	var username;
+	var repromptText = "What is your username? ";
+	var sessionAttributes = {};
+
+	var cardContent = "";
+	var SpeachContent = "User needs the following counties: ";
+	var cardTitle = "username ";
+	getCAPI(
+			"/en/api/V48jkda0/countries/cat/stamps/collection/jpecore",
+			function(userCountries) {
+				// console.log('userCountries: ' + userCountries);
+
+				getCAPI(
+						"/en/api/V48jkda0/countries/cat/stamps",
+						function(allCountries) {
+							// console.log('allCountries: ' + allCountries);
+
+							var countUserCounties = Object.keys(userCountries).length;
+							console.log('countUserCounties = '
+									+ countUserCounties);
+							var countallCountries = Object.keys(allCountries).length;
+							console.log('countallCountries = '
+									+ countallCountries);
+
+							// if username comes back with data then we have it
+							if (countUserCounties < 1) {
+								response
+										.tell("sorry, I could not find that user or the user has no collection. Try setting the name again and spell slowly.");
+							} else {
+								// loop through allcounties
+								var found = 0;
+								var allCountriesKeys = Object
+										.keys(allCountries);
+								for ( var i = 0, length = allCountriesKeys.length; i < length; i++) {
+									var country = allCountries[allCountriesKeys[i]];
+									var countryID = country[0];
+									// console.log("countryID = " + countryID) ;
+									// and look for that country in the user's
+									// collection
+									var userCountry;
+									var userCountriesKeys = Object
+											.keys(userCountries);
+									for ( var j = 0, length2 = userCountriesKeys.length; j < length2; j++) {
+										userCountry = userCountries[userCountriesKeys[j]];
+										var userCountryID = userCountry[0];
+
+										if (countryID == userCountryID) {
+											found = 1;
+											break; // they have it;
+										}
+									}
+									if (found == 0) {
+										SpeachContent = SpeachContent + " \n "
+												+ country[1];
+										// console.log("User needs = "
+										// + country[1]);
+									}
+									found = 0;
+								}
+								console.log(SpeachContent);
+								response.tell(SpeachContent);
+
+							}
+						})
+			})
+}
+
+function handleCountriesNeededValidateIntentRequest(intent, session, response) {
+
+	console.log("in handleCountriesNeededIntentRequest");
+	// var usernameSlot = intent.slots.username;
+	var username;
+	var repromptText = "What is your username? ";
+	var sessionAttributes = {};
+
+	var cardContent = "";
+	var SpeachContent = "Use does not need this country any more: ";
+	var cardTitle = "username ";
+	getCAPI(
+			"/en/api/V48jkda0/countries/cat/stamps/collection/jpecore",
+			function(userCountries) {
+				// console.log('userCountries: ' + userCountries);
+
+				getCAPI(
+						"/en/api/V48jkda0/countries/cat/stamps/custom_list__10/jpecore",
+						function(neededCountries) {
+							// console.log('allCountries: ' + allCountries);
+
+							var countUserCounties = Object.keys(userCountries).length;
+							console.log('countUserCounties = '
+									+ countUserCounties);
+							var countallCountries = Object
+									.keys(neededCountries).length;
+							console.log('countallCountries = '
+									+ countallCountries);
+
+							// if username comes back with data then we have it
+							if (countUserCounties < 1) {
+								response
+										.tell("sorry, I could not find that user or the user has no collection. Try setting the name again and spell slowly.");
+							} else {
+								// loop through allcounties
+								var found = 0;
+								var neeededCountriesKeys = Object
+										.keys(neededCountries);
+								for ( var i = 0, length = neeededCountriesKeys.length; i < length; i++) {
+									var country = neededCountries[neeededCountriesKeys[i]];
+									var countryID = country[0];
+									// console.log("countryID = " + countryID) ;
+									// and look for that country in the user's
+									// collection
+
+									var userCountry;
+									var userCountriesKeys = Object
+											.keys(userCountries);
+									for ( var j = 0, length2 = userCountriesKeys.length; j < length2; j++) {
+										userCountry = userCountries[userCountriesKeys[j]];
+										var userCountryID = userCountry[0];
+
+										if (countryID == userCountryID) {
+											found = 1;
+											break; // they have it;
+										}
+									}
+									if (found == 1) {
+										SpeachContent = SpeachContent + " \n "
+												+ country[1];
+										// console.log("User needs = "
+										// + country[1]);
+									}
+									found = 0;
+								}
+								console.log(SpeachContent);
+								response.tell(SpeachContent);
+
+							}
+						})
+			})
+}
+
 function handleRandomTermIntentRequest(intent, session, response) {
 	var sessionAttributes = {};
 	var repromptText = "I did not hear you. what?";
@@ -712,17 +902,15 @@ function handleRandomTermIntentRequest(intent, session, response) {
 	var glossary = JSON.parse(fs.readFileSync('./glossery.json', 'utf8'));
 
 	var rndNum = Math.floor(Math.random() * Object.keys(glossary).length);
-	
-	console.log ("Object.keys(glossary).length  = " + Object.keys(glossary).length);
+
+	console.log("Object.keys(glossary).length  = "
+			+ Object.keys(glossary).length);
 
 	console.log(" rndNum = " + rndNum);
-	
+
 	var terms = Object.keys(glossary)[rndNum];
-	
+
 	console.log(" terms = " + terms);
-	
- 
-	
 
 	speechText = speechText + "According to linns.com, " + terms + " is "
 			+ glossary[terms].def;
@@ -742,7 +930,8 @@ function handleRandomTermIntentRequest(intent, session, response) {
 
 	session.attributes = sessionAttributes;
 
-	cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
+	cardContent = speechOutput
+			+ "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
 	console.log(" Stamp: handleGetStampIDIntent");
 	response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
 
