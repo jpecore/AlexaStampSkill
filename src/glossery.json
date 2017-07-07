@@ -694,7 +694,9 @@
       "def": " a picture postcard, a cancel, and a stamp presenting maximum concordance. the stamp is usually affixed to the picture side of the card and is tied by the cancel. collectors of maximum cards seek to find or create cards with stamp, cancel and picture in maximum agreement, or concordance. the statutes of the international federation of philately (fip) give specific explanatory notes for the postage stamp, the picture postcard, the cancel, concordance of subject, concordance of place and concordance of time. (see exhibiting chapter.)"
    },
 
- 
+    "meter": {
+     "def": "The mechanical or digital device that creates a valid denominated postage imprint known as a meter stamp. Postage is prepaid to the regulating postal authority. Meters were authorized by the UPU in 1920. They are used today by volume mailers to cut the cost of franking mail."
+   },
 
       "microprinting": {
       "def": " extremely small letters or numbers added to the designs of selected united states stamps as a security feature. in most cases, 8-power magnification or greater is needed to read microprinting."

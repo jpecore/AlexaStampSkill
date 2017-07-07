@@ -24,17 +24,17 @@ According to linns.com, letterpress is  printing done directly from the inked, r
 # Coming soon  
 * What happened today in stamp history?
 * What is the latest stamp news?
-* Tell me a random stamp term.
+* Give me a random stamp term.
 * Tell me about the postal history of {country}.
+* Colnect access
+*  Does {usrname} have any stamp from {Country} listed in his colnect collection. 
+*  Which countries does {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
+*  Give me info on the {value} cent {topic} stamp (It will list the country, series, catalog codes, issued_on, print_run, and then ask if you want to hear more data about that stamp from colnect ) 
+*  How many stamps does {usernme} have in their colnect collection.
+*  What postage stamp were issued by the {Country} in {year}?
+*  Display image of stamp on Alexa Cards (waiting on Colnect to use https) 
 
-* Stamp information (U.S.) 
-*  Ask for information (e.g. year issued,) about a particular U.S. Stamp.  
-*  What postage stamp were issued by the U.S. in {year}?
-*  Display image of stamp on Alexa Cards
-*  Colnect, online personal collection management, access (e.g. list/update your collection)
-
-
-
+ 
 # Contact 
 If you have requests or like to become a beta tester for new features, see my contact info at https://github.com/jpecore
 

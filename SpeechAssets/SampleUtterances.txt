@@ -1,7 +1,14 @@
-GetStampIDIntent {letters}
+GetStampIDIntent What country has the letters {letters} on their stamps
 GetStampIDIntent What country has the letters {letters}
 GetStampIDIntent What country has {letters}
 GetStampIDIntent What country is {letters}
+
+GetStampTermIntent Define {term}
+GetStampTermIntent What is {term}
+GetStampTermIntent What's {term}
+
+
+
 getStampValue What year was the {value} cent {topic} 
 getStampValue What year was {value} cent {topic} 
 getStampValue When was {value} cent {topic} issued on

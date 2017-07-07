@@ -17,11 +17,15 @@ var APP_ID = 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'; // Stamp
 
 var https = require('https');
 var http = require('http');
-
+var Alexa = require("alexa-sdk");
+var storage = require("./storage");
+var dynasty = require("dynasty")({});
+var stampSkillTable = dynasty.table('stampSkill');
+ 
 var urlColnet = "http://colnect.com";
 var urlStampLlst = '/en/stamps/list/';
 var wikiUrl = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&format=json&explaintext=&exsectionformat=plain&redirects=&titles=Postage_stamps_and_postal_history_of_";
-
+var dynamoDBTableName = 'stampDB';
 /**
  * The AlexaSkill Module that has the AlexaSkill prototype and helper functions
  */
@@ -135,8 +139,11 @@ StampSkill.prototype.intentHandlers = {
 	"CountriesNeededIntent" : function(intent, session, response) {
 		handleCountriesNeededIntentRequest(intent, session, response);
 	},
-	"CountriesNeededValidateIntent" : function(intent, session, response) {
-		handleCountriesNeededValidateIntentRequest(intent, session, response);
+	"haveCountryIntent" : function(intent, session, response) {
+		handleHaveCountryIntentRequest(intent, session, response);
+	},
+	"saveUsernameIntent" : function(intent, session, response) {
+		handleSaveUsernameIntentRequest(intent, session, response);
 	}
 
 };
@@ -181,11 +188,12 @@ function handleGetStampIDIntent(intent, session, response) {
 	console.log(" lettersSlot.value = " + lettersSlot.value);
 
 	// replace all the whitespace of the spelt out word
-	
+
 	if (lettersSlot.value) {
-		words =  lettersSlot.value.toUpperCase();
-	};
-	 
+		words = lettersSlot.value.toUpperCase();
+	}
+	;
+
 	words = words.replace(/ /g, '');
 	words = words.replace(/\./g, '');
 
@@ -755,7 +763,7 @@ function handleCountriesNeededIntentRequest(intent, session, response) {
 	var sessionAttributes = {};
 
 	var cardContent = "";
-	var SpeachContent = "User needs the following counties: ";
+	var SpeechContent = "User needs the following counties: ";
 	var cardTitle = "username ";
 	getCAPI(
 			"/en/api/V48jkda0/countries/cat/stamps/collection/jpecore",
@@ -802,88 +810,17 @@ function handleCountriesNeededIntentRequest(intent, session, response) {
 										}
 									}
 									if (found == 0) {
-										SpeachContent = SpeachContent + " \n "
-												+ country[1];
+										SpeechContent = SpeechContent + ", "
+												+ country[1]; // + ' ' +
+										// 'http://colnect.com/en/stamps/list/country/'
+										// + country[0];
 										// console.log("User needs = "
 										// + country[1]);
 									}
 									found = 0;
 								}
-								console.log(SpeachContent);
-								response.tell(SpeachContent);
-
-							}
-						})
-			})
-}
-
-function handleCountriesNeededValidateIntentRequest(intent, session, response) {
-
-	console.log("in handleCountriesNeededIntentRequest");
-	// var usernameSlot = intent.slots.username;
-	var username;
-	var repromptText = "What is your username? ";
-	var sessionAttributes = {};
-
-	var cardContent = "";
-	var SpeachContent = "Use does not need this country any more: ";
-	var cardTitle = "username ";
-	getCAPI(
-			"/en/api/V48jkda0/countries/cat/stamps/collection/jpecore",
-			function(userCountries) {
-				// console.log('userCountries: ' + userCountries);
-
-				getCAPI(
-						"/en/api/V48jkda0/countries/cat/stamps/custom_list__10/jpecore",
-						function(neededCountries) {
-							// console.log('allCountries: ' + allCountries);
-
-							var countUserCounties = Object.keys(userCountries).length;
-							console.log('countUserCounties = '
-									+ countUserCounties);
-							var countallCountries = Object
-									.keys(neededCountries).length;
-							console.log('countallCountries = '
-									+ countallCountries);
-
-							// if username comes back with data then we have it
-							if (countUserCounties < 1) {
-								response
-										.tell("sorry, I could not find that user or the user has no collection. Try setting the name again and spell slowly.");
-							} else {
-								// loop through allcounties
-								var found = 0;
-								var neeededCountriesKeys = Object
-										.keys(neededCountries);
-								for ( var i = 0, length = neeededCountriesKeys.length; i < length; i++) {
-									var country = neededCountries[neeededCountriesKeys[i]];
-									var countryID = country[0];
-									// console.log("countryID = " + countryID) ;
-									// and look for that country in the user's
-									// collection
-
-									var userCountry;
-									var userCountriesKeys = Object
-											.keys(userCountries);
-									for ( var j = 0, length2 = userCountriesKeys.length; j < length2; j++) {
-										userCountry = userCountries[userCountriesKeys[j]];
-										var userCountryID = userCountry[0];
-
-										if (countryID == userCountryID) {
-											found = 1;
-											break; // they have it;
-										}
-									}
-									if (found == 1) {
-										SpeachContent = SpeachContent + " \n "
-												+ country[1];
-										// console.log("User needs = "
-										// + country[1]);
-									}
-									found = 0;
-								}
-								console.log(SpeachContent);
-								response.tell(SpeachContent);
+								console.log(SpeechContent);
+								response.tell(SpeechContent);
 
 							}
 						})
@@ -936,6 +873,171 @@ function handleRandomTermIntentRequest(intent, session, response) {
 	response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
 
 } // end handleRandomTermIntentRequest
+
+function handleSaveUsernameIntentRequest(intent, session, response) {
+
+	// var username = session.attributes.username;
+	var usernameSlot = intent.slots.username;
+	var userName = usernameSlot.value;
+	var speechOutput = '';
+
+	stampSkillTable().insert({
+		'userId' : session.user.userId,
+		'username' : userName
+	}); // end stampSkillTable
+
+	speechOutput = 'Ok ' + userName + ' is saved as your colnect username. ';
+	response.tell(speechOutput);
+
+	/**
+	 * storage.saveUsername(username, session, (u) => { speechOutput = 'Ok ' + u + '
+	 * is saved as your colnect username. '; response.tell(speechOutput); });
+	 */
+}
+
+function handleHaveCountryIntentRequest(intent, session, response) {
+	console.log("in handleHaveCountryIntentRequest");
+	var username = session.attributes.username;
+	var speechOutput;
+	var err, data, u;
+
+	console.log("session.user.userId " + session.user.userId);
+	// var usernameSlot = intent.slots.username;
+
+	console.log("1 username = " + username);
+	
+
+	
+	// if session not found, then check database
+	if (typeof username == 'undefined') {
+		// Get a promise back from the query command
+		
+		
+		var promise = stampSkillTable.find(session.user.userId);
+
+		// Tell the promise what we want to do when it gets data back from DynamoDB
+		promise.then(function(username) {
+		    // Not doing much useful here, but you get the point, now we have the
+		    // user object so we can do cool things with it.
+		    console.log(username);
+		});
+		
+	//	stampSkillTable().find(session.user.userId).then(function(username) {
+	//		console.log(username);
+	//	});
+
+		/***********************************************************************
+		 * storage.getUsername(session, (username) => { console.log("1 username: " +
+		 * username); var speechOutput = 'username: ' +username;
+		 * response.tell(speechOutput); });
+		 * 
+		 * 
+		 * console.log("2 data: " + data); console.log ("2 username = " +
+		 * username);
+		 **********************************************************************/
+
+	}
+
+	console.log("3 username = " + username);
+
+	var repromptText = "What is your username? ";
+	var sessionAttributes = {};
+
+	var countrySlot = intent.slots.country;
+
+	var cardContent = "";
+	var SpeechContent = "";
+	var cardTitle = "Have country?";
+	console.log("username = " + username);
+	if (countrySlot && username) {
+		getCAPI(
+				"/en/api/V48jkda0/countries/cat/stamps/collection/" + username,
+				function(userCountries) {
+					// console.log('userCountries: ' + userCountries);
+
+					getCAPI(
+							"/en/api/V48jkda0/countries/cat/stamps",
+							function(allCountries) {
+								// console.log('allCountries: ' + allCountries);
+
+								var countUserCounties = Object
+										.keys(userCountries).length;
+								// console.log('countUserCounties = ' +
+								// countUserCounties);
+								var countallCountries = Object
+										.keys(allCountries).length;
+								// console.log('countallCountries = ' +
+								// countallCountries);
+
+								// if username comes back with data then we have
+								// it
+								if (countUserCounties < 1) {
+									response
+											.tell("sorry, I could not find that user or the user has no collection. Try setting the name again and spell slowly.");
+								} else {
+									// loop through allcounties to make sure
+									// it's a
+									// valid country.
+									var foundCtry = 0;
+									var foundUserCtry = 0
+									var allCountriesKeys = Object
+											.keys(allCountries);
+
+									for ( var i = 0, length = allCountriesKeys.length; i < length; i++) {
+										var country = allCountries[allCountriesKeys[i]];
+										var countryID = country[0];
+										var countryName = country[1];
+										// console.log("countryName = " +
+										// countryName[1]) ;
+										// and look for that country in the
+										// user's
+										// collection
+										if (countryName.toUpperCase() === countrySlot.value
+												.toUpperCase()) {
+											foundCtry = 1;
+											var userCountry;
+											var userCountriesKeys = Object
+													.keys(userCountries);
+											for ( var j = 0, length2 = userCountriesKeys.length; j < length2; j++) {
+												userCountry = userCountries[userCountriesKeys[j]];
+												var userCountryID = userCountry[0];
+
+												if (countryID == userCountryID) {
+													SpeechContent = SpeechContent
+															+ " No, you have a stamp from "
+															+ userCountry[1];
+													foundUserCtry = 1;
+													break; // they have it;
+												}
+											}
+											if (foundUserCtry == 0) {
+												SpeechContent = SpeechContent
+														+ " Yes, you need a stamp from "
+														+ userCountry[1];
+
+											}
+
+										}
+									}
+									if (foundCtry == 0) {
+										SpeechContent = countrySlot.value
+												+ " is not a valid colnect.com country.";
+									}
+									console.log(SpeechContent);
+									response.tell(SpeechContent);
+
+								}
+							})
+				})
+	} else {
+		if (!username) {
+			response
+					.tell("You must set your username. Say, set my colnect username to.");
+		} else {
+			response.tell("You need to state the country.");
+		}
+	}// if countrySloot
+}
 
 // NO LONGER USED
 /*******************************************************************************
@@ -991,6 +1093,7 @@ function buildSpeechletResponseWithoutCard(output, repromptText,
 
 // Create the handler that responds to the Alexa Request.
 exports.handler = function(event, context) {
+
 	// Create an instance of the StampSkill.
 	var skill = new StampSkill();
 	skill.execute(event, context);

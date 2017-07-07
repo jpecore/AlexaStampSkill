@@ -29,7 +29,7 @@
           "type": "AMAZON.FictionalCharacter"
         }
       ],
-      "intent": "getStampValue"
+      "intent": "getStampDataIntent"
     }
   ]
 }
