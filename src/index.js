@@ -18,9 +18,17 @@ var APP_ID = 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'; // Stamp
 var https = require('https');
 var http = require('http');
 var Alexa = require("alexa-sdk");
-var storage = require("./storage");
+
+var CONFIG = require("./config.json");
+
+var ColnectAPIkey = CONFIG.Colnect.APIkey.key;
+
+
+
+
+// var storage = require("./storage");
 var dynasty = require("dynasty")({});
-var stampSkillTable = dynasty.table('stampSkill');
+var stampSkillTable = dynasty.table('stampSkill') ;
  
 var urlColnet = "http://colnect.com";
 var urlStampLlst = '/en/stamps/list/';
@@ -429,7 +437,7 @@ function getStampData(stampID, eventCallback) {
 
 	console.log("stampID = [" + stampID + "]");
 	var urlColnect = "api.colnect.net";
-	var urlStampID = '/en/api/V48jkda0/item/cat/stamps/producer/95074/id/'
+	var urlStampID =  '/en/api/' + ColnectAPIkey + '/item/cat/stamps/producer/95074/id/'
 			+ stampID
 
 	var request_options = {
@@ -464,11 +472,11 @@ function getStampValueTopic(value, topic, eventCallback) {
 	console.log('value and topic = ' + value + " " + topic);
 
 	var urlColnect = "api.colnect.net";
-	var urlStampLlst = '/en/api/V48jkda0/list/cat/stamps/format/1/country/2669/currency/240/'; // US
+	var urlStampLlst = '/en/api/' + ColnectAPIkey + '/list/cat/stamps/format/1/country/2669/currency/240/'; // US
 	// cents
 
-	http:
-	// api.colnect.net/en/api/V48jkda0/list/cat/stamps/country/2669/currency/240/face_value/20/name/cog
+	// http:
+	// // api.colnect.net/en/api/ /list/cat/stamps/country/2669/currency/240/face_value/20/name/cog
 
 	var ColnectValueTopicPath = urlStampLlst + 'face_value/' + value + '/name/'
 			+ topic;
@@ -670,7 +678,7 @@ function getUsernameRatings(username, eventCallback) {
 	console.log("username =" + username);
 
 	var urlColnect = "api.colnect.net";
-	var urlCollectRatingsPath = '/en/api/V48jkda0/ratings_count/collector/'
+	var urlCollectRatingsPath = '/en/api/' + ColnectAPIkey + '/ratings_count/collector/'
 			+ username;
 	var jsonResult;
 
@@ -766,12 +774,12 @@ function handleCountriesNeededIntentRequest(intent, session, response) {
 	var SpeechContent = "User needs the following counties: ";
 	var cardTitle = "username ";
 	getCAPI(
-			"/en/api/V48jkda0/countries/cat/stamps/collection/jpecore",
+			"/en/api/" + ColnectAPIkey + "/countries/cat/stamps/collection/jpecore",
 			function(userCountries) {
 				// console.log('userCountries: ' + userCountries);
 
 				getCAPI(
-						"/en/api/V48jkda0/countries/cat/stamps",
+						"/en/api/" + ColnectAPIkey + "/countries/cat/stamps",
 						function(allCountries) {
 							// console.log('allCountries: ' + allCountries);
 
@@ -906,22 +914,18 @@ function handleHaveCountryIntentRequest(intent, session, response) {
 
 	console.log("1 username = " + username);
 	
-
+	console.log(" CONFIG.Colnect.APIkey.key = " + CONFIG.Colnect.APIkey.key);
+   
+	  
+	 
+	 
 	
 	// if session not found, then check database
 	if (typeof username == 'undefined') {
 		// Get a promise back from the query command
+		// console.log("make db call using userId to find unsername for userId= " + session.user.userId);
 		
-		
-		var promise = stampSkillTable.find(session.user.userId);
-
-		// Tell the promise what we want to do when it gets data back from DynamoDB
-		promise.then(function(username) {
-		    // Not doing much useful here, but you get the point, now we have the
-		    // user object so we can do cool things with it.
-		    console.log(username);
-		});
-		
+	 
 	//	stampSkillTable().find(session.user.userId).then(function(username) {
 	//		console.log(username);
 	//	});
@@ -951,12 +955,12 @@ function handleHaveCountryIntentRequest(intent, session, response) {
 	console.log("username = " + username);
 	if (countrySlot && username) {
 		getCAPI(
-				"/en/api/V48jkda0/countries/cat/stamps/collection/" + username,
+				"/en/api/" + ColnectAPIkey + "/countries/cat/stamps/collection/" + username,
 				function(userCountries) {
 					// console.log('userCountries: ' + userCountries);
 
 					getCAPI(
-							"/en/api/V48jkda0/countries/cat/stamps",
+							"/en/api/" + ColnectAPIkey + "/countries/cat/stamps",
 							function(allCountries) {
 								// console.log('allCountries: ' + allCountries);
 
