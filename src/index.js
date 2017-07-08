@@ -7,7 +7,6 @@
  * http://www.iswsc.org/iswsc_identifier.html
  * 
  * 
- * TODO: replace key with constant
  */
 
 // App ID for the skill
