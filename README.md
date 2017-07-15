@@ -1,40 +1,39 @@
-# Stamp Collector Skill
-An Amazon Alexa skill to assist Stamp Collectors.
+Stamp collector (philatelist) is a postage stamp collecting assistant with access to colnect.com catalog of more then 600,000 postage stamps.
 
+Ask stamp collector with help you may need while working on your stamp collection.
+# Examples:
+User:  Alexa, ask stamp collector  to define letterpress?  
+Alexa: According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
 
-See https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/alexa-skill-nodejs-quick-start for how to install a skill.
+User: Alexa, ask stamp collector what country has the letters  M A G Y A R  on their stamps?  
+Alexa: According to the I S W S C World Wide Stamp Identifier, possible matches are:  Hungary. 
 
+User: Alexa, ask stamp collector to find stamp with face value twenty two and name Love ?  
+Alex: The 22 ¢ Love You, Mother  stamp  was issued in 1987 with a print run of ......
 
-Stamp collector (philatelist) is your stamp collecting assistant.
+This skill is not sponsored or endorsed by any stamp organization or company.  
 
-Ask stamp collector for help you may need while working on your stamp collection.
-
-# Version 0.1  
+# Version 0.2
+* Colnect access
+* Find stamp with face value  {value}  and name {topic}   (Provides stamp info including , issued_on, print_run from colnect.com) 
+# Version 0.1 
 * Stamp terms
 * Stamp identification by letters on the stamp.
- 
-## Examples:
-Alexa, ask stamp collector what country has the letters C T O T  on their stamps?  
-According to the I S W S C World Wide Stamp Identifier, possible matches are:  Bulgaria. 
-
-Alexa, ask stamp collector  to define letterpress?  
-According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
-
 
 # Coming soon  
 * What happened today in stamp history?
 * What is the latest stamp news?
 * Give me a random stamp term.
 * Tell me about the postal history of {country}.
-* Colnect access
+
 *  Does {usrname} have any stamp from {Country} listed in his colnect collection. 
 *  Which countries does {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
-*  Give me info on the {value} cent {topic} stamp (It will list the country, series, catalog codes, issued_on, print_run, and then ask if you want to hear more data about that stamp from colnect ) 
+
 *  How many stamps does {usernme} have in their colnect collection.
 *  What postage stamp were issued by the {Country} in {year}?
 *  Display image of stamp on Alexa Cards (waiting on Colnect to use https) 
 
- 
+
 # Contact 
 If you have requests or like to become a beta tester for new features, see my contact info at https://github.com/jpecore
 
@@ -50,4 +49,4 @@ If you have requests or like to become a beta tester for new features, see my co
 * http://colnect.com/en/stamps 
 * https://arago.si.edu/
 * https://github.com/jpecore/AlexaStampSkill
-* https://en.wikipedia.org/wiki/Portal:Philately 
+* https://en.wikipedia.org/wiki/Portal:Philately
