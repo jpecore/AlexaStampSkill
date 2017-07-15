@@ -2,5 +2,10 @@
   "dependencies": {
     "alexa-sdk": "^1.0.11",
     "aws-sdk": "^2.82.0"
+  },
+  "devDependencies": {
+    "alexa-conversation": "^0.1.0",
+    "bespoken-tools": "^0.9.45",
+    "mocha": "^3.4.2"
   }
 }
