@@ -63,6 +63,15 @@ conversation(opts)
 //
 // Test
 //
+.userSays('StampFindIntent', {
+    country : 'US',
+    faceValue : '3',
+    topic : 'Eagle'
+}).ssmlResponse // access the SSML response
+.shouldContain('found 2 stamps')
+//
+// Test
+//
 .userSays('StampFindIntent', { 
     country : null,
     faceValue : null,
@@ -75,8 +84,27 @@ conversation(opts)
     country : null,
     faceValue : '3',
     topic : 'NOSUCHSTAMP'
-}).ssmlResponse // access the SSML response
+}).ssmlResponse  
 .shouldContain('sorry, I could not find that')
+//
+// Test
+//
+
+.userSays('StampFindIntent', { 
+    country : null,
+    faceValue : null,
+    topic : null
+}).ssmlResponse.shouldContain('You need to provide')
+
+//
+// Test
+//
+/******
+.userSays('PrintSomethingIntent')
+.ssmlResponse 
+.shouldNotContain('sorry')
+******/ 
+ 
 //
 // END Test
 .end(); // this will actually

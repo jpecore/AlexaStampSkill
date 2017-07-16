@@ -8,8 +8,8 @@ Alexa: According to linns.com, letterpress is  printing done directly from the i
 User: Alexa, ask stamp collector what country has the letters  M A G Y A R  on their stamps?  
 Alexa: According to the I S W S C World Wide Stamp Identifier, possible matches are:  Hungary. 
 
-User: Alexa, ask stamp collector to find stamp with face value twenty two and name Love ?  
-Alex: The 22 ¢ Love You, Mother  stamp  was issued in 1987 with a print run of ......
+User: Alexa, ask stamp collector to find stamp with face value four and name Arizona from United States?  
+Alex:The 4 ¢ 50 Years Arizona Statehood, Giant Saguaro Cactus  stamp was issued in 1962...
 
 This skill is not sponsored or endorsed by any stamp organization or company.  
 
