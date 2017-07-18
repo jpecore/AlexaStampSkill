@@ -154,6 +154,9 @@ StampSkill.prototype.intentHandlers = {
 	handleSaveUsernameIntentRequest(intent, session, response);
     }
 };
+//
+//
+//
 function getWelcomeResponse(response) {
     // the "Open Stamp Collector" request
     // If we wanted to initialize the session to have some attributes we could
@@ -172,6 +175,9 @@ function getWelcomeResponse(response) {
     };
     response.ask(speechOutput, repromptOutput);
 } // end getWelcomeResponse
+//
+//
+//
 function handleGetStampIDIntent(intent, session, response) {
     session.attributes.currentCommand = 'ID';
     var lettersSlot = intent.slots.letters;
@@ -184,7 +190,8 @@ function handleGetStampIDIntent(intent, session, response) {
     // replace all the whitespace of the spelt out word
     if (lettersSlot.value) {
 	words = lettersSlot.value.toUpperCase();
-    };
+    }
+    ;
     // clean up
     words = words.replace(/ /g, '');
     words = words.replace(/\./g, '');
@@ -214,6 +221,9 @@ function handleGetStampIDIntent(intent, session, response) {
     response.ask(speechOutput, repromptOutput);
     // response.tell(speechOutput, repromptOutput, cardTitle, cardContent);
 } // end handleGetStampIDIntent
+//
+//
+//
 function stampDataFormatted(StampID, eventCallback) {
     var speechText, cardTitle, cardText;
     getStampData(
@@ -357,7 +367,8 @@ function handleStampFindIntentRequest(intent, session, response) {
     } else {
 	response.ask(speechOutputForMissingFields, repromptText);
 	return;
-    };
+    }
+    ;
     console.log('topic = ' + topic);
     if (countrySlot) {
 	if (countrySlot.value) {
@@ -367,12 +378,12 @@ function handleStampFindIntentRequest(intent, session, response) {
 		CountryCode = UK_COLNET_COUNTRYID;
 		console.log('CountryCode = ' + CountryCode);
 	    } else {
- 		var arrFound = ColnectCOUNTRIES.filter(function(item) {
+		var arrFound = ColnectCOUNTRIES.filter(function(item) {
 		    return item[1] == countrySlot.value;
 		});
- 		if (arrFound) {
+		if (arrFound) {
 		    if (arrFound[0]) {
- 			CountryCode = arrFound[0][0];
+			CountryCode = arrFound[0][0];
 		    } else {
 			response.ask(speechOutputForUnknownCoutry, repromptText);
 			return;
