@@ -14,7 +14,7 @@ const
 app = require('../index.js');
 const
 opts = {
-    name : 'Welcome Stamp Skill',
+    name : 'Term Stamp Skill',
     app : app,
     appId : 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'
 };
@@ -23,21 +23,12 @@ conversation(opts)
 //
 // Test
 //
-.userSays('stampIntent') // trigger the first Intent
-.plainResponse // this gives you access to the non-ssml response
-.shouldContain('Welcome to the Stamp Collector skill').userSays('GetStampIDIntent', {
-    letters : 'm a g y a r'
+.userSays('GetStampTermIntent', {
+    term : 'perforation'
 }).ssmlResponse // access the SSML response
-.shouldContain('Hungary')
+.shouldContain('perforation is  the')
+//
     
-//
-// Test
-//
-/******
-.userSays('PrintSomethingIntent')
-.ssmlResponse 
-.shouldNotContain('sorry')
-******/ 
  
 //
 // END Test

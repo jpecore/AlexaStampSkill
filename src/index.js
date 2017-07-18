@@ -31,6 +31,7 @@ var FACEVALUE_PATH = "/en/api/" + COLNECT_API_KEY + "/face_values/cat/stamps/cou
 var WIKI_HISTORY_URL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&format=json&explaintext=&exsectionformat=plain&redirects=&titles=Postage_stamps_and_postal_history_of_";
 // CONSTANTS
 var US_COLNET_COUNTRYID = 2669; // USA
+var UK_COLNET_COUNTRYID = 2611 // Great Britain
 // Persistance
 // var storage = require("./storage");
 // var dynasty = require("dynasty")({});
@@ -49,8 +50,9 @@ var StampSkill = function() {
 StampSkill.prototype = Object.create(AlexaSkill.prototype);
 StampSkill.prototype.constructor = StampSkill;
 StampSkill.prototype.eventHandlers.onSessionStarted = function(sessionStartedRequest, session) {
-    console.log("StampSkill onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: "
-	    + session.sessionId + " userId: " + session.user.userId);
+    // console.log("StampSkill onSessionStarted requestId: " +
+    // sessionStartedRequest.requestId + ", sessionId: "
+    // + session.sessionId + " userId: " + session.user.userId);
 };
 /* onLaunch */
 StampSkill.prototype.eventHandlers.onLaunch = function(launchRequest, session, response) {
@@ -182,21 +184,10 @@ function handleGetStampIDIntent(intent, session, response) {
     // replace all the whitespace of the spelt out word
     if (lettersSlot.value) {
 	words = lettersSlot.value.toUpperCase();
-    }
-    ;
+    };
     // clean up
     words = words.replace(/ /g, '');
     words = words.replace(/\./g, '');
-    // console.log(" words = " + words);
-    // load json file of stamp id / countries
-    // var STAMP_ID = require('./stampids.json');
-    // var STAMP_ID = require('./iswsc.json');
-    // var key = 'ABETALEPORTOMAERKE'
-    // console.log('STAMP_ID.ABETALEPORTOMAERKE.countries = ' +
-    // STAMP_ID[key].countries);
-    // var ids = JSON.parse(fs.readFileSync('./stampids.json', 'utf8'));
-    // var iswsc = JSON.parse(fs.readFileSync('./iswsc.json', 'utf8'));
-    // console.log("Output Content : \n" + ISWSC);
     var ids = ISWSC[words];
     // console.log(" ids = " + ids);
     if (ids) {
@@ -225,81 +216,96 @@ function handleGetStampIDIntent(intent, session, response) {
 } // end handleGetStampIDIntent
 function stampDataFormatted(StampID, eventCallback) {
     var speechText, cardTitle, cardText;
-    getStampData(StampID, function(stampData) {
-	var speechText = "", i;
-	// sessionAttributes.text = stampData;
-	// console.log("stampData = " + stampData);
-	// console.log("stampData[4] = " + stampData[4].substring(0, 4));
-	speechText = "The " + stampData[13] + " " + stampData[12].substring(0, 1) + " " + stampData[0]
-		+ "  stamp was issued in " + stampData[4].substring(0, 4);
-	if (stampData[6]) {
-	    speechText = speechText + " with a print run of " + numberWithCommas(stampData[6]) + ".";
-	}
-	if (stampData[1]) {
-	    cardText = cardText + "Country: " + stampData[1] + "\n";
-	}
-	if (stampData[12]) {
-	    cardText = "Series: " + stampData[2] + "\n";
-	}
-	if (stampData[1]) {
-	    cardText = cardText + "Country: " + stampData[1] + "\n";
-	}
-	if (stampData[3]) {
-	    cardText = cardText + "Catalog Codes: " + stampData[3] + "\n";
-	}
-	// TODO handle theme codes
-	/*
-	 * if (stampData[25]) { cardText = cardText + "Themes: " + stampData[25] +
-	 * "\n"; }
-	 */
-	if (stampData[4]) {
-	    cardText = cardText + "Issued on: " + stampData[4] + "\n";
-	}
-	if (stampData[15]) {
-	    cardText = cardText + "Emission: " + stampData[15] + "\n";
-	}
-	if (stampData[17]) {
-	    cardText = cardText + "Printing: " + stampData[17] + "\n";
-	}
-	if (stampData[21]) {
-	    cardText = cardText + "Size: " + stampData[21] + "x" + stampData[22] + "\n";
-	}
-	if (stampData[13]) {
-	    cardText = cardText + "Face value: " + stampData[13];
-	    if (stampData[12]) {
-		// console.log(' stampData[12] ' + stampData[12])
-		cardText = cardText + " " + stampData[12].substring(0, stampData[12].indexOf(' -'));
+    getStampData(
+	    StampID,
+	    function(stampData) {
+		var speechText = "", i;
+		// sessionAttributes.text = stampData;
+		// console.log("stampData = " + stampData);
+		// console.log("stampData[4] = " + stampData[4].substring(0,
+		// 4));
+		// SPEECH TEXT
+		speechText = "The " + stampData[13] + " " + stampData[12].substring(0, 1) + " " + stampData[0]
+			+ "  stamp was issued in " + stampData[4].substring(0, 4);
+		if (stampData[6]) {
+		    speechText = speechText + " with a print run of " + numberWithCommas(stampData[6]) + ".";
+		}
+		// CARD LAYOUT
+		// Colnect fields
+		// 0 ["Name","Country","Series","Catalog Codes","Issued on"
+		// 5 "Expiry date","Print run","Variant","FrontPicture",
+		// 9 "BackPicture","Score","Accuracy","Currency","FaceValue",
+		// 14 "Format", "Emission","Perforation","Printing","Gum",
+		// 19 "Paper" "Watermark","Width", "Height","Colors",
+		// 24 "Name En","Tags" "Description"]
+		if (stampData[1]) {
+		    cardText = cardText + "Country: " + stampData[1] + "\n";
+		}
+		if (stampData[12]) {
+		    cardText = "Series: " + stampData[2] + "\n";
+		}
+		if (stampData[3]) {
+		    cardText = cardText + "Catalog Codes: " + stampData[3] + "\n";
+		}
+		// TODO handle THEME codes
 		/*
-		 * var arrFound = ColnectCOUNTRIES.filter(function(item) {
-		 * return item[0] == stampData[12]; }); console.log('arrFound' +
-		 * arrFound);
-		 * 
-		 * if (arrFound) { console.log('arrFound[0][1]' +
-		 * arrFound[0][1]); cardText = cardText + " " + arrFound[0][1] }
+		 * if (stampData[25]) { cardText = cardText + "Themes: " +
+		 * stampData[25] + "\n"; }
 		 */
-		cardText = cardText + "\n";
-	    }
-	}
-	if (stampData[6]) {
-	    cardText = cardText + "Print run: " + numberWithCommas(stampData[6]) + "\n";
-	}
-	if (stampData[10]) {
-	    cardText = cardText + "Score: " + stampData[10] + "% (" + stampData[11] + ")\n";
-	}
-	if (stampData[26]) {
-	    cardText = cardText + "Description: " + stampData[26] + "\n";
-	}
-	// 0 ["Name","Country","Series","Catalog Codes","Issued on","Expiry
-	// date","Print run",
-	// 7
-	// "Variant","FrontPicture","BackPicture","Score","Accuracy","Currency","FaceValue","Format",
-	// 15
-	// "Emission","Perforation","Printing","Gum","Paper","Watermark","Width",
-	// 22 "Height","Colors","Name En","Tags","Description"]
-	speechText = speechText + " See the Alexa app card for more information. ";
-	cardTitle = stampData[0] + " (" + stampData[1] + ")\n";
-	eventCallback(speechText, cardTitle, cardText);
-    }); // end getStampData call
+		if (stampData[4]) {
+		    cardText = cardText + "Issued on: " + stampData[4] + "\n";
+		}
+		if (stampData[14]) {
+		    cardText = cardText + "Format: " + stampData[14] + "\n";
+		}
+		if (stampData[15]) {
+		    cardText = cardText + "Emission: " + stampData[15] + "\n";
+		}
+		if (stampData[17]) {
+		    cardText = cardText + "Printing: " + stampData[17] + "\n";
+		}
+		// Handle COLORS (codes)
+		if (stampData[16]) {
+		    cardText = cardText + "Perforation: " + removeHTML(stampData[16]) + "\n";
+		}
+		if (stampData[21]) {
+		    cardText = cardText + "Size: " + stampData[21] + "x" + stampData[22] + "\n";
+		}
+		if (stampData[13]) {
+		    cardText = cardText + "Face value: " + stampData[13];
+		    if (stampData[12]) {
+			// console.log(' stampData[12] ' + stampData[12])
+			cardText = cardText + " " + stampData[12].substring(0, stampData[12].indexOf(' -'));
+			/*
+			 * var arrFound = ColnectCOUNTRIES.filter(function(item) {
+			 * return item[0] == stampData[12]; });
+			 * console.log('arrFound' + arrFound);
+			 * 
+			 * if (arrFound) { console.log('arrFound[0][1]' +
+			 * arrFound[0][1]); cardText = cardText + " " +
+			 * arrFound[0][1] }
+			 */
+			cardText = cardText + "\n";
+		    }
+		}
+		if (stampData[6]) {
+		    cardText = cardText + "Print run: " + numberWithCommas(stampData[6]) + "\n";
+		}
+		if (stampData[20]) {
+		    cardText = cardText + "Watermak: " + stampData[20] + "\n";
+		}
+		if (stampData[10]) {
+		    cardText = cardText + "Score: " + Math.round(stampData[10]) + "% Accuracy: " + stampData[11] + "\n";
+		}
+		if (stampData[26]) {
+		    cardText = cardText + "Description: " + stampData[26] + "\n";
+		}
+		cardText = cardText
+			+ "Info provided by Colnect.com. For infomation on fields, see http://colnect.com/en/collectors/wiki/title=Stamp \n";
+		speechText = speechText + " See the Alexa app card for more information. ";
+		cardTitle = stampData[0];
+		eventCallback(speechText, cardTitle, cardText);
+	    }); // end getStampData call
 }; // end stampData
 function requiredField(Slot, speechOutputIfMissing, repromptText, response) {
     if (Slot) {
@@ -351,36 +357,34 @@ function handleStampFindIntentRequest(intent, session, response) {
     } else {
 	response.ask(speechOutputForMissingFields, repromptText);
 	return;
-    }
-    ;
+    };
     console.log('topic = ' + topic);
     if (countrySlot) {
 	if (countrySlot.value) {
-	    if (countrySlot.value == "US" || countrySlot.value == "USA" || countrySlot.value == "us"
-		    || countrySlot.value == "u s" || countrySlot.value == "United States"
-		    || countrySlot.value == "United States of America") {
+	    if (isUSA(countrySlot)) {
 		// let default to usa
+	    } else if (isUK(countrySlot)) {
+		CountryCode = UK_COLNET_COUNTRYID;
+		console.log('CountryCode = ' + CountryCode);
 	    } else {
-		// console.log("countrySlot.value = [" + countrySlot.value +
-		// "]");
-		var arrFound = ColnectCOUNTRIES.filter(function(item) {
+ 		var arrFound = ColnectCOUNTRIES.filter(function(item) {
 		    return item[1] == countrySlot.value;
 		});
-		// console.log('arrFound =' + arrFound);
-		if (arrFound) {
+ 		if (arrFound) {
 		    if (arrFound[0]) {
-			// console.log('for CountryCode arrFound[0][0] = ' +
-			// arrFound[0][0]);
-			CountryCode = arrFound[0][0];
+ 			CountryCode = arrFound[0][0];
 		    } else {
 			response.ask(speechOutputForUnknownCoutry, repromptText);
+			return;
 		    }
 		} else {
 		    response.ask(speechOutputForUnknownCoutry, repromptText);
+		    return;
 		}
 	    }
 	}
     }
+    // console.log('CountryCode = ' + CountryCode);
     // var smallImageUrl =
     // 'https://upload.wikimedia.org/wikipedia/commons/1/16/Modry_mauritius.jpg',
     // largeImageUrl =
@@ -392,7 +396,7 @@ function handleStampFindIntentRequest(intent, session, response) {
 	    function(jsonResult) {
 		// console.log('jsonResult: ' + jsonResult);
 		var count = Object.keys(jsonResult).length;
-		// console.log('count = ' + count);
+		// console.log('getStampValueTopic count = ' + count);
 		session.attributes.stampsFound = jsonResult;
 		session.attributes.stampIndex = 0;
 		switch (Object.keys(jsonResult).length) {
@@ -452,7 +456,16 @@ function handleStampFindIntentRequest(intent, session, response) {
 		    break;
 		}
 	    })
-}; // end handleStampFindIntentRequest
+}// end handleStampFindIntentRequest
+function isUSA(countrySlot) {
+    return countrySlot.value == "US" || countrySlot.value == "USA" || countrySlot.value == "us"
+	    || countrySlot.value == "u s" || countrySlot.value == "United States"
+	    || countrySlot.value == "United States of America";
+}; // end isUSA
+function isUK(countrySlot) {
+    return countrySlot.value == "UK" || countrySlot.value == "United Kingdom" || countrySlot.value == "GB"
+	    || countrySlot.value == "Great Britain";
+}; // end isUK
 //
 function handleGetStampTermIntentRequest(intent, session, response) {
     session.attributes.currentCommand = 'Term';
@@ -494,7 +507,8 @@ function handleGetStampTermIntentRequest(intent, session, response) {
 function getStampData(stampID, eventCallback) {
     console.log("in getStampData");
     // console.log("stampID = [" + stampID + "]");
-    var urlStampID = '/en/api/' + COLNECT_API_KEY + '/item/cat/stamps/producer/95074/id/' + stampID
+    var urlStampID = '/en/api/' + COLNECT_API_KEY + '/item/cat/stamps/id/' + stampID
+    // console.log('urlStampID = ' + urlStampID)
     var request_options = {
 	host : URL_COLNECT_API,
 	headers : {
@@ -518,7 +532,7 @@ function getStampData(stampID, eventCallback) {
 }; // end getStampData
 function getStampValueTopic(value, topic, CountryCode, eventCallback) {
     console.log("in getStampValueTopic");
-    console.log('value and topic = ' + value + " " + topic);
+    // console.log('value and topic = ' + value + " " + topic);
     var urlStampLlst = '/en/api/' + COLNECT_API_KEY + '/list/cat/stamps/format/1/country/' + CountryCode;
     // console.log("urlStampLlst = " + urlStampLlst);
     // cents
@@ -570,6 +584,7 @@ function getStampValueTopic(value, topic, CountryCode, eventCallback) {
 	    // find stamp with face_value and
 	    // topic
 	    var ColnectValueTopicPath = urlStampLlst + '/face_value/' + face_value_id + '/name/' + topic;
+	    // console.log('ColnectValueTopicPath = ' + ColnectValueTopicPath)
 	    var request_options = {
 		host : URL_COLNECT_API,
 		headers : {
@@ -591,6 +606,8 @@ function getStampValueTopic(value, topic, CountryCode, eventCallback) {
 			jsonResult = JSON.parse(body);
 		    }
 		    eventCallback(jsonResult);
+		    // console.log ('returning this json from getStampValueTopic
+		    // ' + jsonResult)
 		});
 	    }).on('error', function(e) {
 		console.log("Got error: ", e);
@@ -609,7 +626,7 @@ function handleGetStampCountryHistoryIntentRequest(intent, session, response) {
     var cardContent = "";
     // var GLOSSARY = require('./glossery.json');
     // var fs = require('fs');
-    console.log(" countrySlot.value = " + countrySlot.value);
+    // console.log(" countrySlot.value = " + countrySlot.value);
     // replace all the whitespace of the spelt out word
     var country = countrySlot.value;
     // words = words.replace(/ /g, '');
@@ -617,7 +634,7 @@ function handleGetStampCountryHistoryIntentRequest(intent, session, response) {
     // term = term.charAt(0).toUpperCase() + term.slice(1);
     if (country) {
 	// term = term.toLowerCase(); // glossary.json is all in lowercase.
-	console.log(" country = " + country);
+	// console.log(" country = " + country);
 	wikiPageUrl = WIKI_HISTORY_URL + country;
 	getJsonHistoryWikipedia(wikiPageUrl, function(historyTextArray) {
 	    var text = historyTextArray.pop();
@@ -713,7 +730,7 @@ function handleStoreUsernameIntentRequest(intent, session, response) {
     })
 }; // end handleStoreUsernameIntentRequest
 function getUsernameRatings(username, eventCallback) {
-    console.log("in getStampValueTopic");
+    console.log("in getUsernameRatings");
     console.log("username =" + username);
     var urlCollectRatingsPath = '/en/api/' + COLNECT_API_KEY + '/ratings_count/collector/' + username;
     var jsonResult;
@@ -1099,6 +1116,9 @@ function buildSpeechletResponseWithoutCard(output, repromptText, shouldEndSessio
 	shouldEndSession : shouldEndSession
     };
 }; // end buildSpeechletResponseWithoutCard
+function removeHTML(s) {
+    return s.replace(/<(?:.|\n)*?>/gm, '');
+}; // end RemoveHTML
 function numberWithCommas(x) {
     x = x.toString();
     var pattern = /(-?\d+)(\d{3})/;
