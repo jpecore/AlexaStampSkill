@@ -14,46 +14,30 @@ const
 app = require('../index.js');
 const
 opts = {
-    name : 'Bad',
+    name : 'Good2',
     app : app,
     appId : 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'
 };
 conversation(opts)
- 
-
-//
-// Test
-//
-.userSays('StampFindIntent', { 
-    country : null,
-    faceValue : null,
-    topic : null
-}).ssmlResponse.shouldContain('You need to provide')
 //
 // Test
 //
 .userSays('StampFindIntent', {
-    country : null,
+    country : 'US',
     faceValue : '3',
-    topic : 'NOSUCHSTAMP'
-}).ssmlResponse  
-.shouldContain('sorry, I could not find that')
-
-
+    topic : 'Eagle'
+}).ssmlResponse // access the SSML response
+.shouldContain('The first one')
 //
 // Test
 //
-
-.userSays('StampFindIntent', { 
-    country : null,
-    faceValue : null,
-    topic : null
-}).ssmlResponse.shouldContain('You need to provide')
-
-
-
- 
- 
+.userSays('StampFindIntent', {
+    country : 'UK',
+    faceValue : '5',
+    topic : 'Eagle'
+}).ssmlResponse // access the SSML response
+.shouldContain('The Eagle Tower')
+//
 //
 // END Test
 .end(); // this will actually

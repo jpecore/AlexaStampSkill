@@ -1,23 +1,25 @@
 /**
- * Copyright 2017 Joe Pecore
- * 
  * Stamp Collector Alexa skill
  * 
- * https://github.com/jpecore/AlexaStampSkill
+ * Copyright 2017 Joe Pecore
  * 
+ * https://github.com/jpecore/AlexaStampSkill
  * 
  */
 // App ID for the skill
 var APP_ID = 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'; // Stamp
 //
 // REQUIRES
-/**
- * The AlexaSkill Module that has the AlexaSkill prototype and helper functions
- */
 var AlexaSkill = require('./AlexaSkill');
+var Alexa = require("alexa-sdk");
+
+ 
+
+
+
 var https = require('https');
 var http = require('http');
-var Alexa = require("alexa-sdk");
+
 var CONFIG = require("./config.json");
 var ColnectCOUNTRIES = require("./countries.json");
 var ColnectCURRENCIES = require("./currencies.json");
@@ -29,20 +31,17 @@ var COLNECT_API_KEY = CONFIG.Colnect.APIkey.key;
 var URL_COLNECT_API = "api.colnect.net";
 var FACEVALUE_PATH = "/en/api/" + COLNECT_API_KEY + "/face_values/cat/stamps/country/"; // +
 var WIKI_HISTORY_URL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&format=json&explaintext=&exsectionformat=plain&redirects=&titles=Postage_stamps_and_postal_history_of_";
+var NEWS_FEEDS = 'http://www.stampnews.com/feed';
+var NONE_STAMP = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
 // CONSTANTS
 var US_COLNET_COUNTRYID = 2669; // USA
 var UK_COLNET_COUNTRYID = 2611 // Great Britain
 // Persistance
-// var storage = require("./storage");
-// var dynasty = require("dynasty")({});
-// var stampSkillTable = dynasty.table('stampSkill');
-// var dynamoDBTableName = 'stampDB';
-/**
- * StampSkill is a child of AlexaSkill. To read more about inheritance in
- * JavaScript, see the link below.
- * 
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
- */
+var storage = require("./storage");
+ // var dynasty = require("dynasty")({});
+ // var stampSkillTable = dynasty.table('stampSkill');
+// var dynamoDBTableName = 'stampSkill';
+// inherits AlexaSkill
 var StampSkill = function() {
     AlexaSkill.call(this, APP_ID);
 };
@@ -50,20 +49,28 @@ var StampSkill = function() {
 StampSkill.prototype = Object.create(AlexaSkill.prototype);
 StampSkill.prototype.constructor = StampSkill;
 StampSkill.prototype.eventHandlers.onSessionStarted = function(sessionStartedRequest, session) {
-    // console.log("StampSkill onSessionStarted requestId: " +
-    // sessionStartedRequest.requestId + ", sessionId: "
-    // + session.sessionId + " userId: " + session.user.userId);
+     console.log("StampSkill onSessionStarted requestId: " +
+    sessionStartedRequest.requestId + ", sessionId: "
+     + session.sessionId + " userId: " + session.user.userId);
+    
+  //   storage.getUsername(session, (u) => { 	 
+//	 session.attributes.username = u; 
+//	 console.log(" session.attributes.username = " + session.attributes.username);
+ //    }); 
+    
 };
 /* onLaunch */
 StampSkill.prototype.eventHandlers.onLaunch = function(launchRequest, session, response) {
-    console.log("StampSkill onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+    console.log("StampSkill onLaunch");
+  //  conosole..og("requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
     // console.log ("ColnectCURRENCIES[1] = " + ColnectCURRENCIES[1] );
-    getWelcomeResponse(response);
+    getWelcomeResponse(session,response);
 };
 /* onSessionEnded */
 StampSkill.prototype.eventHandlers.onSessionEnded = function(sessionEndedRequest, session) {
-    console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
-    // any session cleanup logic would go here
+    //console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
+    console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId) ;
+     // any session cleanup logic would go here
 };
 /* intents */
 StampSkill.prototype.intentHandlers = {
@@ -111,12 +118,13 @@ StampSkill.prototype.intentHandlers = {
 	response.tell(speechOutput);
     },
     "stampIntent" : function(intent, session, response) {
-	console.log("stampIntent   requestId: " + ", sessionId: " + session.sessionId);
-	getWelcomeResponse(response);
+//	console.log("stampIntent   requestId: " + ", sessionId: " + session.sessionId);
+	console.log("stampIntent");
+	getWelcomeResponse(session,response);
     },
     "GetStampIDIntent" : function(intent, session, response) {
-	console.log("GetStampIDIntent   requestId: " + session.application.applicationId + ", sessionId: "
-		+ session.sessionId + "consentToken: ");
+	//console.log("GetStampIDIntent   requestId: " + session.application.applicationId + ", sessionId: "
+	//	+ session.sessionId + "consentToken: ");
 	handleGetStampIDIntent(intent, session, response);
     },
     "StampFindIntent" : function(intent, session, response) {
@@ -127,9 +135,6 @@ StampSkill.prototype.intentHandlers = {
     },
     "GetStampCountryHistoryIntent" : function(intent, session, response) {
 	handleGetStampCountryHistoryIntentRequest(intent, session, response);
-    },
-    "StoreUsernameIntent" : function(intent, session, response) {
-	handleStoreUsernameIntentRequest(intent, session, response);
     },
     "RandomTermIntent" : function(intent, session, response) {
 	handleRandomTermIntentRequest(intent, session, response);
@@ -152,15 +157,22 @@ StampSkill.prototype.intentHandlers = {
     },
     "saveUsernameIntent" : function(intent, session, response) {
 	handleSaveUsernameIntentRequest(intent, session, response);
+    },
+    "GetUsernameIntent" : function(intent, session, response) {
+	handleGetUsernameIntentRequest(intent, session, response);
+    },
+    "News" : function(intent, session, response) {
+	handleNewsIntentRequest(intent, session, response);
     }
 };
 //
 //
-//
-function getWelcomeResponse(response) {
+function getWelcomeResponse(session,response) {
     // the "Open Stamp Collector" request
-    // If we wanted to initialize the session to have some attributes we could
-    // add those here.
+    // Initialize the session to have some attributes here.
+    
+
+	 
     var repromptText = "I did not understand. What did you say?";
     var speechText = "<p>Welcome to the Stamp Collector skill, "
 	    + "which can assit in defining terms, identifying stamps and finding stamp information." + ""
@@ -237,8 +249,12 @@ function stampDataFormatted(StampID, eventCallback) {
 		// SPEECH TEXT
 		speechText = "The " + stampData[13] + " " + stampData[12].substring(0, 1) + " " + stampData[0]
 			+ "  stamp was issued in " + stampData[4].substring(0, 4);
+		speechText += " from " + stampData[2] + " ";
 		if (stampData[6]) {
 		    speechText = speechText + " with a print run of " + numberWithCommas(stampData[6]) + ".";
+		}
+		if (stampData[26]) {
+		    speechText = speechText + "The colnect description says: " + stampData[26] + ".";
 		}
 		// CARD LAYOUT
 		// Colnect fields
@@ -248,6 +264,8 @@ function stampDataFormatted(StampID, eventCallback) {
 		// 14 "Format", "Emission","Perforation","Printing","Gum",
 		// 19 "Paper" "Watermark","Width", "Height","Colors",
 		// 24 "Name En","Tags" "Description"]
+		//
+		// none-image https://s3.amazonaws.com/pecore/none-stamps.jpg
 		if (stampData[1]) {
 		    cardText = cardText + "Country: " + stampData[1] + "\n";
 		}
@@ -313,14 +331,14 @@ function stampDataFormatted(StampID, eventCallback) {
 		cardText = cardText
 			+ "Info provided by Colnect.com. For infomation on fields, see http://colnect.com/en/collectors/wiki/title=Stamp \n";
 		speechText = speechText + " See the Alexa app card for more information. ";
-		cardTitle = stampData[0];
+		cardTitle = stampData[0] + "(" + stampData[4].substr(0, 4) + ", " + stampData[1] + ")";
 		eventCallback(speechText, cardTitle, cardText);
 	    }); // end getStampData call
 }; // end stampData
 function requiredField(Slot, speechOutputIfMissing, repromptText, response) {
     if (Slot) {
 	if (Slot.value) {
-	    console.log('Slot.value = ' + Slot.value)
+	 //   console.log('Slot.value = ' + Slot.value)
 	    return Slot.value;
 	}
     }
@@ -406,6 +424,7 @@ function handleStampFindIntentRequest(intent, session, response) {
 	    CountryCode,
 	    function(jsonResult) {
 		// console.log('jsonResult: ' + jsonResult);
+		var smallImageURL = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
 		var count = Object.keys(jsonResult).length;
 		// console.log('getStampValueTopic count = ' + count);
 		session.attributes.stampsFound = jsonResult;
@@ -427,6 +446,7 @@ function handleStampFindIntentRequest(intent, session, response) {
 		    var firstMatch = jsonResult[Object.keys(jsonResult)[0]];
 		    var StampID = firstMatch[Object.keys(firstMatch)[0]]
 		    // console.log(' StampID =' + StampID);
+		 
 		    stampDataFormatted(StampID, function(speechText, cardTitle, cardContent) {
 			// cardContent = speechText;
 			// cardTitle = stampData[0];
@@ -438,7 +458,12 @@ function handleStampFindIntentRequest(intent, session, response) {
 			    speech : repromptText,
 			    type : AlexaSkill.speechOutputType.PLAIN_TEXT
 			};
-			response.askWithCard(speechOutput, repromptText, cardTitle, cardContent);
+			
+			//console.log("creating card with picture");
+			response.askWithPictureCard(speechOutput, repromptText, cardTitle, cardContent, smallImageURL, smallImageURL);
+
+	              // response.askWithCard(speechOutput, repromptText,
+			// cardTitle, cardContent);
 		    })
 		    break;
 		default: // more then one found
@@ -462,7 +487,10 @@ function handleStampFindIntentRequest(intent, session, response) {
 				    speech : repromptText,
 				    type : AlexaSkill.speechOutputType.PLAIN_TEXT
 				};
-				response.askWithCard(speechOutput, repromptText, cardTitle, cardContent);
+				response.askWithPictureCard(speechOutput, repromptText, cardTitle, cardContent, smallImageURL, smallImageURL);
+
+				// response.askWithCard(speechOutput,
+				// repromptText, cardTitle, cardContent);
 			    })
 		    break;
 		}
@@ -480,46 +508,53 @@ function isUK(countrySlot) {
 //
 function handleGetStampTermIntentRequest(intent, session, response) {
     session.attributes.currentCommand = 'Term';
-    var termSlot = intent.slots.term;
-    var repromptText = "I did not hear you. what?";
-    var speechText = "";
-    var cardTitle = "Stamp Term";
-    var cardContent = "";
-    // var fs = require('fs');
-    console.log(" termSlot.value = " + termSlot.value);
-    // replace all the whitespace of the spelt out word
-    var term = termSlot.value;
-    if (term) {
-	term = term.toLowerCase(); // glossary.json is all in lowercase.
-	var terms = GLOSSARY[term];
-	// console.log(" terms = " + terms);
-	if (terms) {
-	    if (terms.def) {
-		speechText = speechText + "According to linns.com, " + term + " is " + terms.def;
+    
+    console.log(" session.attributes.username = " + session.attributes.username);
+  	 
+	 var termSlot = intent.slots.term;
+	    var repromptText = "I did not hear you. what?";
+	    var speechText = "";
+	    var cardTitle = "Stamp Term";
+	    var cardContent = "";
+	    // var fs = require('fs');
+	    console.log(" termSlot.value = " + termSlot.value);
+	    // replace all the whitespace of the spelt out word
+	    var term = termSlot.value;
+	    if (term) {
+		term = term.toLowerCase(); // glossary.json is all in lowercase.
+		var terms = GLOSSARY[term];
+		// console.log(" terms = " + terms);
+		if (terms) {
+		    if (terms.def) {
+			speechText = speechText + "According to linns.com, " + term + " is " + terms.def;
+		    }
+		} else {
+		    speechText = "Sorry, I could not find the term: " + term + ".";
+		}
+	    } else {
+		speechText = "Sorry, I did not hear a term. "
 	    }
-	} else {
-	    speechText = "Sorry, I could not find the term: " + term + ".";
-	}
-    } else {
-	speechText = "Sorry, I did not hear a term. "
-    }
-    speechText = speechText + "<p>How can I assit you again?</p>";
-    var speechOutput = {
-	speech : "<speak>" + speechText + "</speak>",
-	type : AlexaSkill.speechOutputType.SSML
-    };
-    var repromptOutput = {
-	speech : repromptText,
-	type : AlexaSkill.speechOutputType.PLAIN_TEXT
-    };
-    // TODO create card with link to term
-    response.ask(speechOutput, repromptOutput);
+	    speechText = speechText + "<p>How can I assit you again?</p>";
+	    var speechOutput = {
+		speech : "<speak>" + speechText + "</speak>",
+		type : AlexaSkill.speechOutputType.SSML
+	    };
+	    var repromptOutput = {
+		speech : repromptText,
+		type : AlexaSkill.speechOutputType.PLAIN_TEXT
+	    };
+	    // TODO create card with link to term
+	    response.ask(speechOutput, repromptOutput);
+ 
+    
+    
+   
 }; // end handleGetStampTermIntentRequest
 function getStampData(stampID, eventCallback) {
     console.log("in getStampData");
     // console.log("stampID = [" + stampID + "]");
     var urlStampID = '/en/api/' + COLNECT_API_KEY + '/item/cat/stamps/id/' + stampID
-    // console.log('urlStampID = ' + urlStampID)
+  console.log('urlStampID = ' + urlStampID)
     var request_options = {
 	host : URL_COLNECT_API,
 	headers : {
@@ -550,9 +585,12 @@ function getStampValueTopic(value, topic, CountryCode, eventCallback) {
     // http:
     // // api.colnect.net/en/api/
     // /list/cat/stamps/country/2669/currency/240/face_value/20/name/cog
-    // Get the ID for face_value based on country
-    // BACK HERE
+    
+    /// !!!!!
+    // Get the ID for face_value based on country !!!!
+    // !!!!
     var faceValuesCountryURL = FACEVALUE_PATH + CountryCode;
+   // console.log("faceValuesCountryURL = " + faceValuesCountryURL);
     var faceValuesjson;
     var request_options = {
 	host : URL_COLNECT_API,
@@ -576,7 +614,7 @@ function getStampValueTopic(value, topic, CountryCode, eventCallback) {
 	    // next.
 	    var faceValuesjson = "";
 	    if (body.indexOf("404 Not Found") > -1) {
-		faceValuesjson = "";
+		 eventCallback("");
 	    } else {
 		faceValuesjson = JSON.parse(body);
 	    }
@@ -594,8 +632,14 @@ function getStampValueTopic(value, topic, CountryCode, eventCallback) {
 	    }
 	    // find stamp with face_value and
 	    // topic
+	    
+	    if (typeof  face_value_id   == "undefined") {		
+		 eventCallback(""); 
+		 return;
+	    }
+	    	    
 	    var ColnectValueTopicPath = urlStampLlst + '/face_value/' + face_value_id + '/name/' + topic;
-	    // console.log('ColnectValueTopicPath = ' + ColnectValueTopicPath)
+	    console.log('ColnectValueTopicPath = ' + ColnectValueTopicPath)
 	    var request_options = {
 		host : URL_COLNECT_API,
 		headers : {
@@ -652,10 +696,12 @@ function handleGetStampCountryHistoryIntentRequest(intent, session, response) {
 	    session.attributes.historyArray = historyTextArray;
 	    // TODO: use ask
 	    // TODO handle paging / more
-	    response.tell(text);
+	    response.ask(text);
 	    // console.log("historyText = " + historyText);
 	}); // end getJsonHistoryWikipedia
-    }// end country
+    } // end country
+    // TOTO: need better instructions.
+    response.ask("Please provide a country. What country do you want?");
 }; // end handleGetStampCountryHistoryIntentRequest
 function getJsonHistoryWikipedia(wikiPageUrl, eventCallback) {
     console.log("wikiPageUrl = " + wikiPageUrl);
@@ -686,7 +732,6 @@ function parseJsonHistory(inputText) {
 	endIndex = text.indexOf(delimiter, startIndex + delimiterSize);
 	var eventText = (endIndex == -1 ? text.substring(startIndex) : text.substring(startIndex, endIndex));
 	// replace dashes returned in text from API
-	eventText = eventText.replace(/\\n\\n\s*/g, '. ');
 	eventText = eventText.replace(/\\n\s*/g, '. ');
 	eventText = eventText.replace(/\\u2013\s*/g, '');
 	eventText = eventText.replace(/\\u201d\s*/g, '');
@@ -709,11 +754,47 @@ function parseJsonHistory(inputText) {
     retArr.reverse();
     return retArr;
 }; // end parseJsonHistory
-function handleStoreUsernameIntentRequest(intent, session, response) {
+
+
+function handleSaveUsernameIntentRequest(intent, session, response) {
+    console.log("in handleSaveUsernameIntentRequest");
+    session.attributes.currentCommand = 'SaveUsername';
+    // var username = session.attributes.username;
+    var usernameSlot = intent.slots.username;
+    var repromptText = "I did not hear you. what?";
+    var userName = usernameSlot.value;
+    var speechOutput = '';
+   /*
+     * stampSkillTable().insert({ 'userId' : session.user.userId, 'username' :
+     * userName }); // end stampSkillTable
+     * 
+     */
+ 
+   
+ 
+     console.log (speechOutput);
+     storage.saveUsername(userName, session, (u) => { 
+	  speechOutput = 'Ok ' + u + ' is saved as your colnect username. '; 
+	  var speechOutput = {
+			speech : "<speak>" + speechOutput + "</speak>",
+			type : AlexaSkill.speechOutputType.SSML
+		    };
+	     var repromptOutput = {
+			speech : repromptText,
+			type : AlexaSkill.speechOutputType.PLAIN_TEXT
+		    }; 
+	  response.ask(speechOutput, repromptText);
+   });
+      
+    
+ // response.tell(speechOutput);
+}; // end handleSaveUsernameIntentRequest
+//
+function handleGetUsernameIntentRequest(intent, session, response) {
     // set my colnect username to {username}
     // set username to to {username}
     console.log("in handleGetStampUsernameIntentRequest");
-    var usernameSlot = intent.slots.username;
+   // usernameSlot = intent.slots.username;
     var username;
     var repromptText = "What is your username? ";
     var cardContent = "";
@@ -721,7 +802,7 @@ function handleStoreUsernameIntentRequest(intent, session, response) {
     if (usernameSlot) {
 	username = usernameSlot.value;
     }
-    username = username.replace(/ /g, ''); // collaspe all whitespace
+ username = username.replace(/ /g, ''); // collaspe all whitespace
     getUsernameRatings(
     // Colnect collector
     username, function(jsonResult) {
@@ -920,24 +1001,7 @@ function handleRandomTermIntentRequest(intent, session, response) {
     cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
     response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
 } // end handleRandomTermIntentRequest
-function handleSaveUsernameIntentRequest(intent, session, response) {
-    session.attributes.currentCommand = 'SaveUsername';
-    // var username = session.attributes.username;
-    var usernameSlot = intent.slots.username;
-    var userName = usernameSlot.value;
-    var speechOutput = '';
-    stampSkillTable().insert({
-	'userId' : session.user.userId,
-	'username' : userName
-    }); // end stampSkillTable
-    speechOutput = 'Ok ' + userName + ' is saved as your colnect username. ';
-    // TODO: change to ask
-    response.tell(speechOutput);
-    /**
-     * storage.saveUsername(username, session, (u) => { speechOutput = 'Ok ' + u + '
-     * is saved as your colnect username. '; response.tell(speechOutput); });
-     */
-}; // end handleSaveUsernameIntentRequest
+
 function handleNextStampIntentRequest(intent, session, response) {
     // TODO make sure in Find command.
     var repromptText = "I did not hear you. what?";
@@ -1164,6 +1228,63 @@ function handlePrintSomethingIntentRequest(intent, session, response) {
     cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
     response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
 } // end handlePrintSomethingIntentRequest
+function handleNewsIntentRequest(intent, session, response) {
+  
+    var parser = require('rss-parser');
+   
+    
+    session.attributes.currentCommand = 'News';
+    console.log('in handleNewsIntentRequest');
+    var repromptText = "I did not hear you. what?";
+    var speechText = "";
+    var cardTitle = "News";
+    var cardContent = "";
+    
+    console.log("NEWS_FEEDS = " +  NEWS_FEEDS);
+    parser.parseURL(NEWS_FEEDS, function(err, parsed) {
+	session.attributes.parsed = parsed;
+	session.attributes.err = err;
+	speechText = "" + parsed.feed.title + " news. <break time=\"0.8s\"/> ";
+	
+	var i = 0;
+	parsed.feed.entries.forEach(function(entry) {
+	  // console.log(entry.title + ':' + entry.link);
+	    if (i <= 4) {
+		speechText = speechText + pubDate2voice(entry.pubDate) + ". " + entry.title +    + ". <break time=\"0.6s\"/> " + entry.content;
+		i++;
+	    }
+	})
+	//  console.log ("speechText  = " + speechText);
+	    speechText = speechText + "<p>How else can I assit you today?</p>";
+	    var speechOutput = {
+		speech : "<speak>" + speechText + "</speak>",
+		type : AlexaSkill.speechOutputType.SSML
+	    };
+	    var repromptOutput = {
+		speech : repromptText,
+		type : AlexaSkill.speechOutputType.PLAIN_TEXT
+	    };
+	    response.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
+	 
+    })
+
+} // end handleNewsIntentRequest
+
+function pubDate2voice (pubDate) {
+ 
+var date = new Date(pubDate);
+
+var months = Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+var voice = months[date.getMonth()] +  " " + date.getDate() + ", " + date.getFullYear()
+
+
+// console.log ("voice date = "+ voice);
+return voice;
+
+ 
+}
+
+//
 // NO LONGER USED
 /*******************************************************************************
  * function parseStampValueTopic(inputText) { console.log('in

@@ -14,22 +14,18 @@ const
 app = require('../index.js');
 const
 opts = {
-    name : 'Term Stamp Skill',
+    name : 'Term',
     app : app,
     appId : 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'
 };
 conversation(opts)
- 
 //
 // Test
 //
-.userSays('GetStampTermIntent', {
-    term : 'perforation'
-}).ssmlResponse // access the SSML response
+.userSays('GetStampTermIntent', { term : 'perforation'})
+.ssmlResponse // access the SSML response
 .shouldContain('perforation is  the')
 //
-    
- 
 //
 // END Test
 .end(); // this will actually
