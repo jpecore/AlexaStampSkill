@@ -50,6 +50,15 @@ conversation(opts)
     topic : null
 }).ssmlResponse.shouldContain('You need to provide')
 
+//
+// Test
+//
+.userSays('StampFindIntent', {
+    country : "XXX",
+    faceValue : '3',
+    topic : 'NOSUCHSTAMP'
+}).ssmlResponse  
+.shouldContain('I could not find that country')
 
 
  

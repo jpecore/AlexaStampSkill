@@ -37,6 +37,13 @@ conversation(opts)
     topic : 'Eagle'
 }).ssmlResponse // access the SSML response
 .shouldContain('The Eagle Tower')
+
+.userSays('StampFindIntent', {
+    country : 'Canada',
+    faceValue : '1',
+    topic : 'Queen Elizabeth'
+}).ssmlResponse // access the SSML response
+.shouldContain('Queen Elizabeth II')
 //
 //
 // END Test
