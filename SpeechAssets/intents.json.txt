@@ -21,15 +21,43 @@
     {
       "slots": [
         {
-          "name": "value",
+          "name": "term",
+          "type": "LIST_OF_TERMS"
+        }
+      ],
+      "intent": "GetStampTermIntent"
+    },
+    {
+      "intent": "NextStampIntent"
+    },
+    {
+      "intent": "PrevStampIntent"
+    },
+    {
+      "intent": "RandomTermIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "faceValue",
           "type": "AMAZON.NUMBER"
         },
         {
           "name": "topic",
-          "type": "AMAZON.FictionalCharacter"
+          "type": "LIST_OF_TOPICS"
+        },
+        {
+          "name": "country",
+          "type": "AMAZON.Country"
         }
       ],
-      "intent": "getStampDataIntent"
+      "intent": "StampFindIntent"
+    },
+    {
+      "intent": "News"
+    },
+    {
+      "intent": "ShowCurrentSeries"
     }
   ]
 }

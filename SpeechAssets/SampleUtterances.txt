@@ -1,18 +1,49 @@
 GetStampIDIntent What country has the letters {letters} on their stamps
+GetStampIDIntent What country has on their stamps the letters {letters}
 GetStampIDIntent What country has the letters {letters}
-GetStampIDIntent What country has {letters}
-GetStampIDIntent What country is {letters}
-
-GetStampTermIntent Define {term}
+GetStampIDIntent What country {letters}
+GetStampIDIntent Identify stamp with {letters}
+GetStampIDIntent Identify stamp {letters}
+GetStampIDIntent Identify {letters}
+GetStampTermIntent {term}
+GetStampTermIntent Define the term {term}
 GetStampTermIntent What is {term}
 GetStampTermIntent What's {term}
-
-
-
-getStampValue What year was the {value} cent {topic} 
-getStampValue What year was {value} cent {topic} 
-getStampValue When was {value} cent {topic} issued on
-getStampValue When was the {value} cent {topic} issued on
-getStampValue When was {value} cent {topic} issued
-getStampValue When was {topic} issued on
-getStampValue When was {topic} issued
+GetStampTermIntent Define {term}
+NextStampIntent Next
+NextStampIntent Next stamp
+PrevStampIntent Previous
+PrevStampIntent Previous stamp
+RandomTermIntent random term
+RandomTermIntent random definition
+RandomTermIntent give me a random term
+RandomTermIntent tell me a random term
+RandomTermIntent give me a random definition
+RandomTermIntent tell me a random definition
+StampFindIntent Find stamp with with a topic of {topic} a face value of {faceValue} from {country}
+StampFindIntent Find stamp with topic {topic} with a face value of {faceValue} from {country}
+StampFindIntent Find stamp with a name {topic} with a face value of {faceValue}  from {country}
+StampFindIntent Find stamp with with name {topic} a face value of {faceValue} from {country}
+StampFindIntent Find stamp with topic {topic}  with a face value of {faceValue}
+StampFindIntent Find stamp topic  {topic} with a face value  {faceValue}
+StampFindIntent Find stamp name  {topic} with a face value  {faceValue}
+StampFindIntent Find stamp {topic} with a facevalue  {faceValue}
+StampFindIntent Find stamp with name  {topic} with facevalue {faceValue}
+StampFindIntent Find stamp name  {topic}  with facevalue {faceValue}
+StampFindIntent Find stamp with name  {topic} and  facevalue {faceValue}
+StampFindIntent Find stamp with name  {topic}  and facevalue {faceValue}  from {country}
+StampFindIntent Find stamp with name  {topic}
+StampFindIntent Find stamp with topic  {topic}
+StampFindIntent Find stamp with facevalue {faceValue}
+StampFindIntent Find name {topic} facevalue {faceValue}
+StampFindIntent Find name {topic} facevalue {faceValue}
+StampFindIntent Find stamp {topic}  {faceValue}  from {country}
+StampFindIntent Find stamp {topic} {faceValue}
+StampFindIntent Find name {topic} facevalue {faceValue}  from {country}
+StampFindIntent Find stamp with {topic} {faceValue}
+StampFindIntent Find name {topic} value {faceValue}
+StampFindIntent Find name {topic} stamp value {faceValue}
+StampFindIntent Find name {topic} stamp with value {faceValue}
+News Read news
+News Read stamp news
+ShowCurrentSeries Get series

@@ -16,7 +16,7 @@ This skill is not sponsored or endorsed by any stamp organization or company.
 
 # Version 0.2
 * Colnect access
-* Find stamp with face value  {value}  and name {topic}   (Provides stamp info including , issued_on, print_run from colnect.com) 
+ * Find stamp   name {topic} with  face value of {value} from {country}   (Provides stamp info including , issued_on, print_run from colnect.com) 
 # Version 0.1 
 * Stamp terms
 * Stamp identification by letters on the stamp.
@@ -27,10 +27,10 @@ This skill is not sponsored or endorsed by any stamp organization or company.
 * Give me a random stamp term.
 * Tell me about the postal history of {country}.
 
-*  Does {usrname} have any stamp from {Country} listed in his colnect collection. 
-*  Which countries does {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
+*  Does colnect user {username} have any stamp from {Country} listed in his colnect collection. 
+*  Which countries does colnect user {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
 
-*  How many stamps does {usernme} have in their colnect collection.
+*  How many stamps does colnect user {usernme} have in their colnect collection.
 *  What postage stamp were issued by the {Country} in {year}?
 *  Display image of stamp on Alexa Cards (waiting on Colnect to use https) 
 
