@@ -2,14 +2,15 @@ Stamp collector (philatelist) is a postage stamp collecting assistant with acces
 
 Ask stamp collector with help you may need while working on your stamp collection.
 # Examples:
-User:  Alexa, ask stamp collector  to define letterpress?  
-Alexa: According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
 
 User: Alexa, ask stamp collector what country has the letters  M A G Y A R  on their stamps?  
 Alexa: According to the I S W S C World Wide Stamp Identifier, possible matches are:  Hungary. 
 
-User: Alexa, ask stamp collector to find stamp with face value four and name Arizona from United States?  
-Alex:The 4 ¢ 50 Years Arizona Statehood, Giant Saguaro Cactus  stamp was issued in 1962...
+User: Alexa, ask stamp collector  to find stamp name Virginia  with a face value twenty five from United States?
+Alex: The USA 25 ¢ Virginia Ratification Date  stamp was issued in 1988...
+
+User:  Alexa, ask stamp collector to define letterpress?  
+Alexa: According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
 
 This skill is not sponsored or endorsed by any stamp organization or company.  
 
