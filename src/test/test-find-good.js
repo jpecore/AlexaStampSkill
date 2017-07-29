@@ -25,7 +25,12 @@ conversation(opts)
     topic : 'Eagle'
 }).ssmlResponse // access the SSML response
 .shouldContain('The first one')
-
+.userSays('NextStampIntent')
+.ssmlResponse // access the SSML response
+.shouldContain('American Eagle  stamp')
+.userSays('PrevStampIntent')
+.ssmlResponse // access the SSML response
+.shouldContain('American Eagle and Pouring')
 //
 // END Test
 .end(); // this will actually

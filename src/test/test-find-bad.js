@@ -20,7 +20,8 @@ opts = {
 };
 conversation(opts)
  
-
+.userSays('NextStampIntent' )
+.ssmlResponse.shouldContain('No more stamps found')
 //
 // Test
 //
