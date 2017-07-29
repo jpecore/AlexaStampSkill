@@ -392,12 +392,18 @@ function ShortenCountry(c) {
 }
 //
 function StampListReponse(that, jsonResult) {
+    console.log("in StampListReponse");
  var repromptText = "What would you like to do?";
  var cardContent = "";
  var cardTitle = "Stamp Year ";
  var smallImageURL = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
  var count = Object.keys(jsonResult).length;
  // console.log('getStampValueTopic count = ' + count);
+ 
+
+ // limit to top 10 
+ jsonResult = jsonResult.slice(0, 10);
+ //console.log(jsonResult);
  that.attributes['stampsFound'] = JSON.stringify(jsonResult);
  that.attributes['stampIndex'] = 0;
  
@@ -416,10 +422,10 @@ function StampListReponse(that, jsonResult) {
 
    stampDataFormatted(that, StampID, function(speechText, cardTitle, cardContent) {
 
-    var imageObj = {
-     smallImageUrl: smallImageURL,
-     largeImageUrl: smallImageURL
-    };
+       var imageObj = {
+	       smallImageUrl: smallImageURL,
+	       largeImageUrl: smallImageURL
+	      };
     speechText = speechText + "How can I help?";
     that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent, imageObj);
 
@@ -429,14 +435,18 @@ function StampListReponse(that, jsonResult) {
    var firstMatch = jsonResult[Object.keys(jsonResult)[0]];
    var StampID = firstMatch[Object.keys(firstMatch)[0]]
    var speechText;
+   var imageObj = {
+	     smallImageUrl: smallImageURL,
+	     largeImageUrl: smallImageURL
+	    };
    // console.log(' StampID =' + StampID);
    stampDataFormatted(that,
     StampID,
     function(speechText, cardTitle, cardContent) {
      speechText = "Colnect.com found " + jsonResult.length + " stamps. The first one is " + speechText;
-     speechText = speechText + "\n" + " To hear another say  Next. To end say Stop. To find a different stamp use Find stamp. What would you like to do next?";
+     speechText = speechText + "\n" + " Say Next view the top 10 or Find stamp to locate a different. What would you like?";
 
-     that.emit(':ask', speechText, repromptText);
+     that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent, imageObj);
 
     })
    break;
@@ -1090,9 +1100,15 @@ function handleShowCurrentSeriesRequest(that) {
   Stamps = JSON.parse(that.attributes['stampsFound']);
  }
  var firstStamp = Stamps[0];
-
+  
+ if (firstStamp) {
+     var seriesId = firstStamp[1];
+ } else {
+     jsonResult = "";
+ }
+ 
  // Get the Series
- var seriesId = firstStamp[1];
+
  // Find them .
  // http://api.colnect.net/en/api/xxxxx/list/cat/stamps/series/208275
  getStampSeries(seriesId,
@@ -1107,18 +1123,17 @@ function handleShowCurrentSeriesRequest(that) {
 function handleShowCurrentVariantsRequest(that) {
     console.log("in handleShowCurrentVariantsRequest");
     
-    var Stamps;
-    if (typeof that.attributes['stampsFound'] !== "undefined") {
-
-     Stamps = JSON.parse(that.attributes['stampsFound']);
-    }
-    var firstStamp = Stamps[0];
+  //  var Stamps;
+  //  if (typeof that.attributes['stampsFound'] !== "undefined") {
+   //  Stamps = JSON.parse(that.attributes['stampsFound']);
+  //  }
+   // var firstStamp = Stamps[0];
 
     // Get the variants
    // console.log("variant id = " + that.attributes['VariantId']);
    
     
-    getStampVariants( that.attributes['VariantId'] ,
+     getStampVariants( that.attributes['VariantId'] ,
      function(jsonResult) {
       // console.log('jsonResult: ' + jsonResult);
       StampListReponse(that, jsonResult);
