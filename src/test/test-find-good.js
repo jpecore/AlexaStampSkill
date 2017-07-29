@@ -32,6 +32,9 @@ conversation(opts)
 .ssmlResponse // access the SSML response
 .shouldContain('American Eagle and Pouring')
 
+
+//.userSays('SessionEndedRequest')
+
  
 
 //

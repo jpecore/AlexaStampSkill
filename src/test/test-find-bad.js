@@ -20,8 +20,7 @@ opts = {
 };
 conversation(opts)
  
-.userSays('NextStampIntent' )
-.ssmlResponse.shouldContain('No more stamps found')
+
 //
 // Test
 //
@@ -30,6 +29,9 @@ conversation(opts)
     faceValue : null,
     topic : null
 }).ssmlResponse.shouldContain('You need to provide')
+//
+.userSays('NextStampIntent' )
+.ssmlResponse.shouldContain('No more stamps found')
 //
 // Test
 //
