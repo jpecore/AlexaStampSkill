@@ -28,6 +28,7 @@ conversation(opts)
     topic : 'Queen Elizabeth'
 }).ssmlResponse // access the SSML response
 .shouldContain('Queen Elizabeth II')
+.shouldContain('Say series to hear')
 //
 // Test
 //

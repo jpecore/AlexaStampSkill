@@ -187,14 +187,14 @@ function stampDataFormatted(StampID, eventCallback) {
   function(stampData) {
    var speechText = "";
 
-   speechText = "The " + ShortenCountry(stampData[1]) + " " + stampData[13] + " " + stampData[12].substring(0, 1) + " " + stampData[0] + "  stamp was issued in " + stampData[4].substring(0, 4);
+   speechText = "The " + ShortenCountry(stampData[1]) + " " + stampData[13] + " " + stampData[12].substring(0, 1) + " " + stampData[0] + "  stamp. It was issued in " + stampData[4].substring(0, 4);
 
    if (stampData[6]) {
     speechText = speechText + ", with a print run of " + numberWithCommas(stampData[6]);
    }
-   speechText = speechText + ".";
+   speechText = speechText + ". ";
    if (stampData[26]) {
-    speechText = speechText + "The colnect description says: " + stampData[26] + ".";
+    speechText = speechText + "The description says: " + stampData[26] + ". ";
    }
    // CARD LAYOUT
    // Colnect fields
@@ -209,7 +209,7 @@ function stampDataFormatted(StampID, eventCallback) {
    if (stampData[1]) {
     cardText = cardText + "Country: " + stampData[1] + "\n";
    }
-   if (stampData[12]) {
+   if (stampData[2]) {
     cardText = "Series: " + stampData[2] + "\n";
    }
    if (stampData[3]) {
@@ -260,7 +260,11 @@ function stampDataFormatted(StampID, eventCallback) {
     cardText = cardText + "Description: " + stampData[26] + "\n";
    }
    cardText = cardText + "Info provided by Colnect.com. For infomation on fields, see http://colnect.com/en/collectors/wiki/title=Stamp \n";
-   speechText = speechText + " See the Alexa app card for more information. How else can I help you today?";
+   speechText = speechText + " See the Alexa app card for more information. ";
+   if (stampData[2]) {
+       speechText = speechText + "<p>Say series to hear about " + stampData[2] + "</p>";
+   }
+  
    cardTitle = stampData[0] + " (" + stampData[4].substr(0, 4) + ", " + ShortenCountry(stampData[1]) + ")";
    // console.log(" stampDataFormatted speechText = " + speechText)
    eventCallback(speechText, cardTitle, cardText);
@@ -401,6 +405,7 @@ function StampListReponse(that, jsonResult) {
      smallImageUrl: smallImageURL,
      largeImageUrl: smallImageURL
     };
+    speechText = speechText + "How can I help?";
     that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent, imageObj);
 
    })
@@ -972,7 +977,7 @@ function handleNextStampIntentRequest(that) {
    // console.log ("0 speechText = " + speechText)
    if (that.attributes['stampIndex'] < Stamps.length - 1) {
     // don't add on last stamp;
-    speechText = speechText + "\n" 
+    speechText = speechText  
     	+ " To hear more say  Next, to end say Stop, to find more say Find stamp. " 
     	+ "What would you like to do next?";
    }
@@ -1010,7 +1015,7 @@ function handlePrevStampIntentRequest(that) {
    // session.attributes.stampIndex);
    if (that.attributes['stampIndex'] < Stamps.length - 1) {
     // don't add on last stamp;
-    speechText = speechText + "\n" + " To hear more say  Next, to end say Stop, to find more say Find stamp. " + "What would you like to do next?";
+    speechText = speechText  + " To hear more say  Next, to end say Stop, to find another say Find stamp. " + "What would you like to do next?";
    }
    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
   });
