@@ -34,7 +34,7 @@ conversation(opts)
 //
 .userSays('ShowCurrentVariants')
 .ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain("Queen Elizabeth II")
 
  
 //
