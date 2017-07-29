@@ -31,6 +31,9 @@ conversation(opts)
 .userSays('PrevStampIntent')
 .ssmlResponse // access the SSML response
 .shouldContain('American Eagle and Pouring')
+
+ 
+
 //
 // END Test
 .end(); // this will actually

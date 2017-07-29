@@ -38,17 +38,21 @@ var storage = require("./storage");
 // inherits AlexaSkill
 var locale ; // set in exports.handler
  
+   
   
-
  
 var handlers = {
 	 'LaunchRequest': function () {
-	     getWelcomeResponse(this.event.request,this.emit);
+	     getWelcomeResponse(this);
 	    },
 
 	    'SessionEndedRequest': function () {
 	        console.log('session ended!');
+	       
 	        // any session cleanup logic would go here
+	       
+	            
+	        
 	        this.emit(':saveState', true); // Be sure to call :saveState to
 						// persist your session
 						// attributes in DynamoDB
@@ -89,55 +93,58 @@ var handlers = {
        // console.log("stampIntent requestId: " + ", sessionId: " +
 	// session.sessionId);
 	console.log("stampIntent");
-	getWelcomeResponse(this.event.request,this.emit);
+	getWelcomeResponse(this);
     },
     "GetStampIDIntent" : function() {
 	// console.log("GetStampIDIntent requestId: " +
 	// session.application.applicationId + ", sessionId: "
 	// + session.sessionId + "consentToken: ");
-	handleGetStampIDIntent(this.event.request,this.emit);
+	handleGetStampIDIntent(this);
     },
     "StampFindIntent" : function() {
 	 
-	handleStampFindIntentRequest(this.event.request,this.emit,this.attributes);
+	
+	handleStampFindIntentRequest(this);
+	
     },
     "GetStampTermIntent" : function() {
-	handleGetStampTermIntentRequest(this.event.request,this.emit,this.attributes);
+	handleGetStampTermIntentRequest(this);
     },
     "GetStampCountryHistoryIntent" : function() {
-	handleGetStampCountryHistoryIntentRequest(this.event.request,this.emit);
+	handleGetStampCountryHistoryIntentRequest(this);
     },
     "RandomTermIntent" : function() {
-	handleRandomTermIntentRequest(this.event.request,this.emit);
+	handleRandomTermIntentRequest(this);
     },
     "NextStampIntent" : function() {
-	handleNextStampIntentRequest(this.event.request,this.emit, this.attributes);
+	handleNextStampIntentRequest(this);
+	 
     },
     "PrevStampIntent" : function() {
-	handlePrevStampIntentRequest(this.event.request,this.emit, this.attributes);
+	handlePrevStampIntentRequest(this);
     },
     // Not yet used or will never be used when published.
     "PrintSomethingIntent" : function() {
-	handlePrintSomethingIntentRequest(this.event.request,this.emit);
+	handlePrintSomethingIntentRequest(this);
     },
     "CountriesNeededIntent" : function() {
-	handleCountriesNeededIntentRequest(this.event.request,this.emit);
+	handleCountriesNeededIntentRequest(this);
     },
     "haveCountryIntent" : function() {
-	handleHaveCountryIntentRequest(this.event.request,this.emit);
+	handleHaveCountryIntentRequest(this);
     },
     "saveUsernameIntent" : function() {
-	handleSaveUsernameIntentRequest(this.event.request,this.emit);
+	handleSaveUsernameIntentRequest(this);
     },
     "GetUsernameIntent" : function() {
-	handleGetUsernameIntentRequest(this.event.request,this.emit);
+	handleGetUsernameIntentRequest(this);
     },
     "News" : function() {
-	handleNewsIntentRequest(this.event.request,this.emit,this.attributes);
+	handleNewsIntentRequest(this);
     }
     ,
     "ShowCurrentSeries" : function() {
-	handleShowCurrentSeriesRequest(this.event.request,this.emit,this.attributes);
+	handleShowCurrentSeriesRequest(this);
     },
     'Unhandled': function() {
         this.emit(':ask', 'Sorry, I didn\'t get that. Try saying a number.', 'Try saying a number.');
@@ -146,22 +153,22 @@ var handlers = {
 };
 //
 //
-function getWelcomeResponse(request,emit) {
+function getWelcomeResponse(that) {
    	 
     var repromptText = "I did not understand. What did you say?";
     var speechText = "<p>Welcome to the Stamp Collector skill, "
 	    + "which can assit in defining terms, identifying stamps and finding stamp information." + ""
 	    + "Say Help for more information.</p>" + "<p>How can I assist you today?</p>";
  
-    emit(':ask', speechText, repromptText);
+    that.emit(':ask', speechText, repromptText);
 } // end getWelcomeResponse
 //
 //
 //
-function handleGetStampIDIntent(request,emit) {
+function handleGetStampIDIntent(that) {
     
     
-    var lettersSlot = request.intent.slots.letters;
+    var lettersSlot = that.event.request.intent.slots.letters;
     var repromptText = "I did not hear you. what?";
     var speechText = "";
     var cardTitle = "Stamp Identification";
@@ -192,7 +199,7 @@ function handleGetStampIDIntent(request,emit) {
     // TODO: link to Colnet Country
    
  
-    emit(':ask', speechText, repromptText);
+    that.emit(':ask', speechText, repromptText);
    
 } // end handleGetStampIDIntent
 //
@@ -296,14 +303,14 @@ function requiredField(Slot, speechOutputIfMissing, repromptText, response) {
     }
     return null;
 }; // end requiredField
-function handleStampFindIntentRequest(request,emit,attributes) {
+function handleStampFindIntentRequest(that) {
          
     console.log("in handleStampFindIntentRequest");
-    var topicSlot =  request.intent.slots.topic;
+    var topicSlot =  that.event.request.intent.slots.topic;
     var topic = "";
        
-    var valueSlot =  request.intent.slots.faceValue;
-    var countrySlot =  request.intent.slots.country;
+    var valueSlot =  that.event.request.intent.slots.faceValue;
+    var countrySlot =  that.event.request.intent.slots.country;
     var repromptText = "What would you like to do?";
     var cardContent = "";
     var cardTitle = "Stamp Year ";
@@ -319,7 +326,7 @@ function handleStampFindIntentRequest(request,emit,attributes) {
 	// we have one
     } else {
 	// response.ask(speechOutputForMissingFields, repromptText);
-	 emit(':ask', speechText, repromptText);
+	that.emit(':ask', speechText, repromptText);
 	return;
     }
     ;
@@ -347,7 +354,7 @@ function handleStampFindIntentRequest(request,emit,attributes) {
 		//  console.log("CountryCode from slot = " + CountryCode)
 		if (! CountryCode) {
 		   // response.ask(speechOutputForUnknownCoutry, repromptText);
-		    emit(':ask', speechOutputForUnknownCoutry, repromptText);
+		    that.emit(':ask', speechOutputForUnknownCoutry, repromptText);
 		 return;
 		}
 	    }
@@ -355,14 +362,14 @@ function handleStampFindIntentRequest(request,emit,attributes) {
 	    // use "locale"
 	    // covert 2 codes to Country Name
 	 //   console.log("request.locale = " + request.locale)
-	    locale = request.locale.substring(3,5);
+	    locale = that.event.request.locale.substring(3,5);
 	  //  console.log(" locale = " + locale)
 	    var CountryName = iso_countries.getName(locale, "en")
 	     // console.log("CountryName = " + CountryName)
 	     CountryCode = getCountryCode( CountryName  )
 	  //   console.log("CountryCode from locale = " + CountryCode)
 	     if (! CountryCode) {
-		 emit(':ask', speechOutputForUnknownCoutry, repromptText);
+		 that.emit(':ask', speechOutputForUnknownCoutry, repromptText);
 		 
 		 return;
 	     }
@@ -376,7 +383,7 @@ function handleStampFindIntentRequest(request,emit,attributes) {
 	    CountryCode,
 	    function(jsonResult) {
 		// console.log('jsonResult: ' + jsonResult);
-		StampListReponse(request,emit,attributes, jsonResult);
+		StampListReponse(that, jsonResult);
 		
 		
 	    })
@@ -397,21 +404,21 @@ function ShortenCountry(c) {
     
 }
 
-function StampListReponse(request,emit,attributes, jsonResult){
+function StampListReponse(that, jsonResult){
     var repromptText = "What would you like to do?";
     var cardContent = "";
     var cardTitle = "Stamp Year ";
     var smallImageURL = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
 	var count = Object.keys(jsonResult).length;
 	// console.log('getStampValueTopic count = ' + count);
-	     attributes['stampsFound'] = jsonResult;
-	     attributes['stampIndex'] = 0;
+	     that.attributes['stampsFound'] = JSON.stringify(jsonResult);
+	     that.attributes['stampIndex'] = 0;
 	 
 	switch (Object.keys(jsonResult).length) {
 	case 0: // no stamp found
 	    speechText = "sorry, I could not find that stamp. How can I help you?";
 	 
-	    emit(':ask', speechText, repromptText);
+	    that.emit(':ask', speechText, repromptText);
 	    break;
 	case 1: // only 1 found
 	    var firstMatch = jsonResult[Object.keys(jsonResult)[0]];
@@ -424,7 +431,7 @@ function StampListReponse(request,emit,attributes, jsonResult){
 			    smallImageUrl: smallImageURL,
 			    largeImageUrl: smallImageURL
 			};
-		emit(':askWithCard', speechText, repromptText,cardTitle, cardContent,imageObj);
+		that.emit(':askWithCard', speechText, repromptText,cardTitle, cardContent,imageObj);
           
 	    })
 	    break;
@@ -442,7 +449,7 @@ function StampListReponse(request,emit,attributes, jsonResult){
 				+ "\n"
 				+ " To hear another say  Next. To end say Stop. To find a different stamp use Find stamp. What would you like to do next?";
 			 
-			  emit(':ask', speechText, repromptText);
+			that.emit(':ask', speechText, repromptText);
 			 
 		    })
 	    break;
@@ -476,10 +483,10 @@ function isUK(countrySlot) {
 	    || countrySlot.value == "Great Britain" || countrySlot.value == "United Kingdom of Great Britain and Northern Ireland";
 }; // end isUK
 //
-function handleGetStampTermIntentRequest(request,emit,attributes) {
+function handleGetStampTermIntentRequest(that) {
    // console.log(" this.attributes['username'] " + attributes['username']);
   	 
-	 var termSlot = request.intent.slots.term;
+	 var termSlot = that.event.request.intent.slots.term;
 	    var repromptText = "I did not hear you. what?";
 	    var speechText = "";
 	    var cardTitle = "Stamp Term";
@@ -508,7 +515,7 @@ function handleGetStampTermIntentRequest(request,emit,attributes) {
 	 
 	    // TODO create card with link to term
 	 
-	    emit(':ask', speechText, repromptText);
+	    that.emit(':ask', speechText, repromptText);
     
     
    
@@ -671,8 +678,8 @@ function getStampSeries(seriesId, eventCallback) {
 }; // end getStampSeries
 
 
-function handleGetStampCountryHistoryIntentRequest(request,emit) {
-    var countrySlot = request.intent.slots.country;
+function handleGetStampCountryHistoryIntentRequest(that) {
+    var countrySlot = that.event.request.intent.slots.country;
     var repromptText = "I did not hear you. what?";
     var speechText = "";
     var cardTitle = "Postal History";
@@ -749,12 +756,12 @@ function parseJsonHistory(inputText) {
 }; // end parseJsonHistory
 
 
-function handleSaveUsernameIntentRequest(request,emit) {
+function handleSaveUsernameIntentRequest(that) {
     console.log("in handleSaveUsernameIntentRequest");
   
    
     // var username = session.attributes.username;
-    var usernameSlot = request.intent.slots.username;
+    var usernameSlot = that.event.request.intent.slots.username;
     var repromptText = "I did not hear you. what?";
     var userName = usernameSlot.value;
     var speechOutput = '';
@@ -763,7 +770,7 @@ function handleSaveUsernameIntentRequest(request,emit) {
   // console.log (speechOutput);
      storage.saveUsername(userName, session, (u) => { 
 	  speechOutput = 'Ok ' + u + ' is saved as your colnect username. '; 
-	  emit(':ask', speechOutput, repromptText);
+	  that.emit(':ask', speechOutput, repromptText);
 	  
    });
       
@@ -771,11 +778,11 @@ function handleSaveUsernameIntentRequest(request,emit) {
  
 }; // end handleSaveUsernameIntentRequest
 //
-function handleGetUsernameIntentRequest() {
+function handleGetUsernameIntentRequest(that) {
     // set my colnect username to {username}
     // set username to to {username}
     console.log("in handleGetStampUsernameIntentRequest");
-   // usernameSlot = intent.slots.username;
+   usernameSlot = that.event.intent.slots.username;
     var username;
     var repromptText = "What is your username? ";
     var cardContent = "";
@@ -792,15 +799,15 @@ function handleGetUsernameIntentRequest() {
 	// console.log('count = ' + count);
 	// if username comes back with data then we have it
 	if (count < 1) {
-	    emit(':tell', "sorry, I could not find that user. Try setting the name again and spell slowly.");
+	   that.emit(':tell', "sorry, I could not find that user. Try setting the name again and spell slowly.");
 	   
 	} else {
 	     
 	 
 	    attributes['colnectid'] = username
 	    // TODO: change to ask
-	    response.tell();
-	    emit(':tell', "Thank you. Your username as been saved.");
+	    //response.tell();
+	    that.emit(':tell', "Thank you. Your username as been saved.");
 	}
     })
 }; // end handleStoreUsernameIntentRequest
@@ -876,7 +883,7 @@ function getCAPI(urlPath, eventCallback) {
 	console.log("Got error: ", e);
     });
 }; // end getCAPI
-function handleCountriesNeededIntentRequest() {
+function handleCountriesNeededIntentRequest(that) {
   
    
     console.log("in handleCountriesNeededIntentRequest");
@@ -897,7 +904,7 @@ function handleCountriesNeededIntentRequest() {
 	    // if username comes back with data then we have it
 	    if (countUserCounties < 1) {
 		  
-		  emit(':tell', "sorry, I could not find that user or the user has no collection. "
+		  that.emit(':tell', "sorry, I could not find that user or the user has no collection. "
 				+ "Try setting the name again and spell slowly.");
 		 
 	    } else {
@@ -934,12 +941,12 @@ function handleCountriesNeededIntentRequest() {
 		// TODO change all tell to ask
 	 
 	
-		emit(':tell', SpeechContent);
+		that.emit(':tell', SpeechContent);
 	    }
 	})
     })
 }; // end handleCountriesNeededIntentRequest
-function handlePrintStampThemesIntentRequest(request,emit) {
+function handlePrintStampThemesIntentRequest(that) {
     
     
     console.log('in handlePrintGlossaryTermsIntentRequest');
@@ -959,10 +966,10 @@ function handlePrintStampThemesIntentRequest(request,emit) {
     speechText = speechText + "<p>How else can I assit you?</p>"
    
     cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
-	emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
    
 } // end handleRandomTermIntentRequest
-function handleRandomTermIntentRequest() {
+function handleRandomTermIntentRequest(that) {
     
  
     var repromptText = "I did not hear you. what?";
@@ -976,16 +983,21 @@ function handleRandomTermIntentRequest() {
     speechText = speechText + "<p>How else can I assit you?</p>"
    
     cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
-	emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 	 
   
 } // end handleRandomTermIntentRequest
 
-function handleNextStampIntentRequest(request,emit,attributes) {
+function handleNextStampIntentRequest(that) {
     // TODO make sure in Find command.
     var repromptText = "I did not hear you. what?";
     var speechText, cardTitle, cardText, repromptText;
-    var Stamps =  attributes['stampsFound'] ;
+  //  console.log(that.attributes['stampsFound'])
+    var Stamps
+    if (typeof  that.attributes['stampsFound']   !== "undefined") {
+	 
+	Stamps = JSON.parse(that.attributes['stampsFound']) ;
+    }
     //console.log (Stamps);
   
   
@@ -995,11 +1007,12 @@ function handleNextStampIntentRequest(request,emit,attributes) {
    // console.log("session.attributes.stampIndex: " +
    // session.attributes.stampIndex);
    ///console.log( Stamps);
-    if (Stamps && attributes['stampIndex'] + 1 <= Stamps.length - 1) {
+    if (Stamps && that.attributes['stampIndex'] + 1 <= Stamps.length - 1) {
 	 
-	attributes['stampIndex'] += 1;
-	 
-	var nextStamp = Stamps[attributes['stampIndex']];
+	that.attributes['stampIndex'] += 1;
+	// console.log(that.attributes);
+
+	var nextStamp = Stamps[that.attributes['stampIndex']];
 	 
 	var nextStampId = nextStamp[0];
 	// console.log ("nextStampId = " + nextStampId)
@@ -1008,7 +1021,7 @@ function handleNextStampIntentRequest(request,emit,attributes) {
 	    // console.log(" session.attributes.stampIndex = " +
 	    // session.attributes.stampIndex);
 	// console.log ("0 speechText = " + speechText)
-	    if (attributes['stampIndex'] < Stamps.length - 1) {
+	    if (that.attributes['stampIndex'] < Stamps.length - 1) {
 		// don't add on last stamp;
 		speechText = speechText + "\n"
 			+ " To hear more say  Next, to end say Stop, to find more say Find stamp. "
@@ -1016,57 +1029,65 @@ function handleNextStampIntentRequest(request,emit,attributes) {
 		
 	    }
 	 // console.log ("2 speechText = " + speechText)
-	   	emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
  
 	 	    
 	});
     } else {
 	speechText = "<p>No more stamps found.</p><p>How else can I assist you?</p>";
 	// console.log ("2 speechText = " + speechText)
-	     	emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
  
      }
    
 }; // end handleNextStampIntentRequest
-function handlePrevStampIntentRequest(request,emit,attributes) {
+function handlePrevStampIntentRequest(that) {
     // TODO make sure in Find command.
     var repromptText = "I did not hear you. what?";
     var speechText, cardTitle, cardText, repromptText;
-    var Stamps = attributes['stampsFound'];
+    var Stamps ;
+    if (typeof  that.attributes['stampsFound']   !== "undefined") {
+	 
+	Stamps = JSON.parse(that.attributes['stampsFound']) ;
+    }
       // console.log("session.attributes.stampIndex: " +
     // session.attributes.stampIndex);
     // console.log("Stamps.length: " + Stamps.length);
-    if ( Stamps && attributes['stampIndex']   - 1 >= 0) {
-	 attributes['stampIndex'] = attributes['stampIndex'] - 1;
-	 var prevStamp = Stamps[attributes['stampIndex'] ] 
+    if ( Stamps && that.attributes['stampIndex']   - 1 >= 0) {
+	that.attributes['stampIndex'] = that.attributes['stampIndex'] - 1;
+	 var prevStamp = Stamps[that.attributes['stampIndex'] ] 
 	var nextStampId = prevStamp[0];
 	stampDataFormatted(nextStampId, function(speechText, cardTitle, cardContent) {
 	    // console.log(" Stamps.length = " + Stamps.length);
 	    // console.log(" session.attributes.stampIndex = " +
 	    // session.attributes.stampIndex);
-	    if ( attributes['stampIndex'] < Stamps.length - 1) {
+	    if ( that.attributes['stampIndex'] < Stamps.length - 1) {
 		// don't add on last stamp;
 		speechText = speechText + "\n"
 			+ " To hear more say  Next, to end say Stop, to find more say Find stamp. "
 			+ "What would you like to do next?";
 	    }
 	   
-		emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 		 
 	});
     } else {
 	speechText = "<p>No more stamps found</p><p>How else can I assist you?";
 	 
-        emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 			 
     }
    
 }; // end handlePrevStampIntentRequest
-function handleShowCurrentSeriesRequest(request,emit, attributes) {
+function handleShowCurrentSeriesRequest(that) {
     
     var repromptText = "I did not hear you. what?";
     var speechText, cardTitle, cardText, repromptText;
-    var Stamps =  attributes['stampsFound'];
+    var Stamps ;
+    if (typeof  that.attributes['stampsFound']   !== "undefined") {
+	 
+	Stamps = JSON.parse(that.attributes['stampsFound']) ;
+    }
     var firstStamp = Stamps[0];
     
     // Get the Series
@@ -1076,22 +1097,22 @@ function handleShowCurrentSeriesRequest(request,emit, attributes) {
     getStampSeries(seriesId,
 	    function(jsonResult) {
 		// console.log('jsonResult: ' + jsonResult);
-		StampListReponse(request,emit,attributes, jsonResult);		
+		StampListReponse(that, jsonResult);		
 	    })
 
     
 };  // end handleShowCurrentSeriesRequest
-function handleHaveCountryIntentRequest(request,emit,attributes) {
+function handleHaveCountryIntentRequest(that) {
     
     console.log("in handleHaveCountryIntentRequest");
-    var username = attributes['username'];
+    var username = that.attributes['username'];
     var speechOutput;
     var err, data, u;
    
  
     var repromptText = "What is your username? ";
     var sessionAttributes = {};
-    var countrySlot = request.intent.slots.country;
+    var countrySlot = that.event.request.intent.slots.country;
     var cardContent = "";
     var SpeechContent = "";
     var cardTitle = "Have country?";
@@ -1150,7 +1171,7 @@ function handleHaveCountryIntentRequest(request,emit,attributes) {
 		    }
 		    // console.log(SpeechContent);
 			
-			emit(':tell',SpeechContent);
+			that.emit(':tell',SpeechContent);
 			 
 		    
 		}
@@ -1158,10 +1179,10 @@ function handleHaveCountryIntentRequest(request,emit,attributes) {
 	})
     } else { 
 	if (!username) {
-	    emit(':tell',"You must set your username. Say, set my colnect username to.");
+	    that.emit(':tell',"You must set your username. Say, set my colnect username to.");
 	    
 	} else {
-	    emit(':tell',"You need to state the country.");
+	    that.emit(':tell',"You need to state the country.");
 	     
 	}
     }// if countrySloot
@@ -1178,7 +1199,7 @@ function numberWithCommas(x) {
     return x;
 }; // end numberWithCommas
 // helper tool
-function handlePrintSomethingIntentRequest(request,emit,attributes) {
+function handlePrintSomethingIntentRequest(that) {
  
     console.log('in handlePrintSomethingIntentRequest');
     var repromptText = "I did not hear you. what?";
@@ -1198,7 +1219,7 @@ function handlePrintSomethingIntentRequest(request,emit,attributes) {
     emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
     
 } // end handlePrintSomethingIntentRequest
-function handleNewsIntentRequest(request,emit,attributes) {
+function handleNewsIntentRequest(that) {
   
     var parser = require('rss-parser');
     
@@ -1210,9 +1231,9 @@ function handleNewsIntentRequest(request,emit,attributes) {
     
     console.log("NEWS_FEEDS = " +  NEWS_FEEDS);
     parser.parseURL(NEWS_FEEDS, function(err, parsed) {
-	 attributes['parsed'] = parsed;
+	 that.attributes['parsed'] = parsed;
 	 
-	 attributes['err'] = err;
+	 that.attributes['err'] = err;
 	speechText = "" + parsed.feed.title + " news. <break time=\"0.8s\"/> ";
 	
 	var i = 0;
@@ -1226,7 +1247,7 @@ function handleNewsIntentRequest(request,emit,attributes) {
 	// console.log ("speechText = " + speechText);
 	    speechText = speechText + "<p>How else can I assit you today?</p>";
 	 
-	    emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 	    
 	 
     })
@@ -1243,11 +1264,7 @@ var voice = months[date.getMonth()] +  " " + date.getDate() + ", " + date.getFul
 
 // console.log ("voice date = "+ voice);
 return voice;
-
- 
 }
-
- 
  
 // Create the handler that responds to the Alexa Request.
 var constants = require('./constants');
