@@ -129,6 +129,10 @@ var handlers = {
   handleShowCurrentSeriesRequest(this);
  },
  //
+ "ShowCurrentVariants": function() {
+  handleShowCurrentVariantsRequest(this);
+ },
+ //
  'Unhandled': function() {
   this.emit(':ask', 'Sorry, I didn\'t get that. Try saying a number.', 'Try saying a number.');
  }
@@ -180,7 +184,7 @@ function handleGetStampIDIntent(that) {
 //
 //
 //
-function stampDataFormatted(StampID, eventCallback) {
+function stampDataFormatted(that,StampID, eventCallback) {
  var speechText, cardTitle, cardText;
  getStampData(
   StampID,
@@ -262,8 +266,17 @@ function stampDataFormatted(StampID, eventCallback) {
    cardText = cardText + "Info provided by Colnect.com. For infomation on fields, see http://colnect.com/en/collectors/wiki/title=Stamp \n";
    speechText = speechText + " See the Alexa app card for more information. ";
    if (stampData[2]) {
-       speechText = speechText + "<p>Say series to hear about " + stampData[2] + "</p>";
+       speechText = speechText + "<p>Say series to hear about " + stampData[2] + ".</p>";
    }
+   if (stampData[7]) {
+       speechText = speechText + "Say variants to get variants. ";
+       that.attributes['VariantId']= stampData[7];  
+     //  console.log("setting attribute variantid to " +  stampData[7])
+     //  console.log(stampData);
+   } else {  
+       that.attributes['VariantId']= ""
+    }
+  
   
    cardTitle = stampData[0] + " (" + stampData[4].substr(0, 4) + ", " + ShortenCountry(stampData[1]) + ")";
    // console.log(" stampDataFormatted speechText = " + speechText)
@@ -387,7 +400,9 @@ function StampListReponse(that, jsonResult) {
  // console.log('getStampValueTopic count = ' + count);
  that.attributes['stampsFound'] = JSON.stringify(jsonResult);
  that.attributes['stampIndex'] = 0;
-
+ 
+ 
+ // console.log ( that.attributes['stampsFound']);
  switch (Object.keys(jsonResult).length) {
   case 0: // no stamp found
    speechText = "sorry, I could not find that stamp. How can I help you?";
@@ -399,7 +414,7 @@ function StampListReponse(that, jsonResult) {
    var StampID = firstMatch[Object.keys(firstMatch)[0]]
     // console.log(' StampID =' + StampID);
 
-   stampDataFormatted(StampID, function(speechText, cardTitle, cardContent) {
+   stampDataFormatted(that, StampID, function(speechText, cardTitle, cardContent) {
 
     var imageObj = {
      smallImageUrl: smallImageURL,
@@ -415,7 +430,7 @@ function StampListReponse(that, jsonResult) {
    var StampID = firstMatch[Object.keys(firstMatch)[0]]
    var speechText;
    // console.log(' StampID =' + StampID);
-   stampDataFormatted(
+   stampDataFormatted(that,
     StampID,
     function(speechText, cardTitle, cardContent) {
      speechText = "Colnect.com found " + jsonResult.length + " stamps. The first one is " + speechText;
@@ -643,6 +658,45 @@ function getStampSeries(seriesId, eventCallback) {
 
 }; // end getStampSeries
 
+
+function getStampVariants(Id, eventCallback) {
+    console.log("in getStampVariants");
+     
+
+    var ColnectValueTopicPath = API_PATH + '/list/cat/stamps/variant/' + Id;
+    //http://api.colnect.net/en/api/xxx/list/cat/stamps/variant//
+    console.log('variatnts ColnectValueTopicPath = ' + ColnectValueTopicPath)
+    var request_options = {
+     host: URL_COLNECT_API,
+     headers: {
+      'User-Agent': 'Mozilla/5.0'
+     },
+     path: ColnectValueTopicPath
+    };
+    http.get(request_options, function(res) {
+     var body = '';
+     res.on('data', function(chunk) {
+      body += chunk;
+     });
+     res.on('end', function() {
+     // console.log("body3 = " + body);
+      var jsonResult = "";
+      if (body.indexOf("404 Not Found") > -1 ||  body == "[]") {
+       jsonResult = "";
+      }       else      {
+       jsonResult = JSON.parse(body);
+      }
+      eventCallback(jsonResult);
+      // console.log ('returning this json from getStampValueTopic
+      // ' + jsonResult)
+     });
+    }).on('error', function(e) {
+     console.log("Got error: ", e);
+    });
+
+   }; // end getStampVariants
+   
+   
 //
 function handleGetStampCountryHistoryIntentRequest(that) {
  var countrySlot = that.event.request.intent.slots.country;
@@ -970,7 +1024,7 @@ function handleNextStampIntentRequest(that) {
 
   var nextStampId = nextStamp[0];
   // console.log ("nextStampId = " + nextStampId)
-  stampDataFormatted(nextStampId, function(speechText, cardTitle, cardContent) {
+  stampDataFormatted(that,nextStampId, function(speechText, cardTitle, cardContent) {
    // console.log(" Stamps.length = " + Stamps.length);
    // console.log(" session.attributes.stampIndex = " +
    // session.attributes.stampIndex);
@@ -1009,7 +1063,7 @@ function handlePrevStampIntentRequest(that) {
   that.attributes['stampIndex'] = that.attributes['stampIndex'] - 1;
   var prevStamp = Stamps[that.attributes['stampIndex']]
   var nextStampId = prevStamp[0];
-  stampDataFormatted(nextStampId, function(speechText, cardTitle, cardContent) {
+  stampDataFormatted(that,nextStampId, function(speechText, cardTitle, cardContent) {
    // console.log(" Stamps.length = " + Stamps.length);
    // console.log(" session.attributes.stampIndex = " +
    // session.attributes.stampIndex);
@@ -1050,6 +1104,29 @@ function handleShowCurrentSeriesRequest(that) {
 
 }; // end handleShowCurrentSeriesRequest
 //
+function handleShowCurrentVariantsRequest(that) {
+    console.log("in handleShowCurrentVariantsRequest");
+    
+    var Stamps;
+    if (typeof that.attributes['stampsFound'] !== "undefined") {
+
+     Stamps = JSON.parse(that.attributes['stampsFound']);
+    }
+    var firstStamp = Stamps[0];
+
+    // Get the variants
+   // console.log("variant id = " + that.attributes['VariantId']);
+   
+    
+    getStampVariants( that.attributes['VariantId'] ,
+     function(jsonResult) {
+      // console.log('jsonResult: ' + jsonResult);
+      StampListReponse(that, jsonResult);
+     })
+
+
+   }; // end handleShowCurrentVariantsRequest
+   //
 function handleHaveCountryIntentRequest(that) {
 
  console.log("in handleHaveCountryIntentRequest");
