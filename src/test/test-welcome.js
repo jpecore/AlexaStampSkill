@@ -32,11 +32,14 @@ conversation(opts)
 .plainResponse // this gives you access to the non-ssml response
 .shouldContain('Welcome to the Stamp Collector skill')
 //
-.userSays('GetStampIDIntent', {
-    letters : 'm a g y a r'
-}).ssmlResponse // access the SSML response
-.shouldContain('Hungary')
-    
+ //
+.userSays('AMAZON.StopIntent') // trigger the first Intent
+.plainResponse // this gives you access to the non-ssml response
+.shouldContain('Hope to see you again')
+ //
+.userSays('AMAZON.CancelIntent') // trigger the first Intent
+.plainResponse // this gives you access to the non-ssml response
+.shouldContain('Cancelled')    
 //
 // Test
 //

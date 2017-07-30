@@ -26,6 +26,12 @@ conversation(opts)
 .ssmlResponse // access the SSML response
 .shouldContain('perforation is  the')
 //
+// Test
+//
+.userSays('RandomTermIntent' )
+.ssmlResponse // access the SSML response
+.shouldContain('From linns.com')
+//
 //
 // END Test
 .end(); // this will actually

@@ -43,6 +43,12 @@ conversation(opts)
 .ssmlResponse // access the SSML response
 .shouldContain('Queen Elizabeth II')
 //
+// Test
+//
+.userSays('PrevStampIntent')
+.ssmlResponse // access the SSML response
+.shouldContain('Queen Elizabeth II')
+//
 //
 // END Test
 .end(); // this will actually

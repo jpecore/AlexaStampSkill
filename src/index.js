@@ -1006,7 +1006,7 @@ function handleRandomTermIntentRequest(that) {
  speechText = speechText + "From linns.com, " + terms + " is " + GLOSSARY[terms].def;
  speechText = speechText + "<p>How else can I assit you?</p>"
 
- cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
+ var cardContent = speechText + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
  that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 } // end handleRandomTermIntentRequest
 //
@@ -1060,8 +1060,8 @@ function handleNextStampIntentRequest(that) {
 function handlePrevStampIntentRequest(that) {
  // TODO make sure in Find command.
  var repromptText = "I did not hear you. what?";
- var speechText, cardTitle, cardText, repromptText;
- var Stamps;
+ var speechText, cardTitle, cardText, repromptText, cardContent
+ 
  if (typeof that.attributes['stampsFound'] !== "undefined") {
 
   Stamps = JSON.parse(that.attributes['stampsFound']);
