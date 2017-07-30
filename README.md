@@ -31,13 +31,13 @@ This skill is not sponsored or endorsed by any stamp organization or company.
 * Tell me about the postal history of {country}.
 * What happened today in stamp history?
 * More Colnect.com commands:
-*  Get series of current stamp found
-*  Get variants of current stamp found
-*  Does colnect user {username} have any stamp from {Country} listed in his colnect collection. 
-*  Which countries does colnect user {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
-*  How many stamps does colnect user {usernme} have in their colnect collection.
-*  What postage stamp were issued by the {Country} in {year}?
-*  Display image of stamp on Alexa Cards (waiting on Colnect to use https) 
+ * Get series of current stamp found
+ * Get variants of current stamp found
+ * Does colnect user {username} have any stamp from {Country} listed in his colnect collection. 
+ * Which countries does colnect user {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
+ * How many stamps does colnect user {usernme} have in their colnect collection.
+ * What postage stamp were issued by the {Country} in {year}?
+ * Display image of stamp on Alexa Cards (waiting on Colnect to use https) 
 
 # Contact 
 If you have requests or like to become a beta tester for new features, see my contact info at https://github.com/jpecore
