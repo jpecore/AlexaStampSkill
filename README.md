@@ -8,7 +8,7 @@ User: Alexa, ask stamp collector what country has the letters  M A G Y A R  on t
 Alexa: According to the ISWSC World Wide Stamp Identifier, possible matches are:  Hungary. 
 
 User: Alexa, ask stamp collector to find stamp name Virginia  with face value twenty five from United States?
-Alex: The USA 25 � Virginia Ratification Date  tamp was issued in 1988...
+Alex: The USA 25 ¢ Virginia Ratification Date  tamp was issued in 1988...
 
 User:  Alexa, ask stamp collector to define letterpress?  
 Alexa: According to linns.com, letterpress is  printing done directly from the inked, raised surface of the printing plate.
@@ -25,18 +25,18 @@ This skill is not sponsored or endorsed by any stamp organization or company.
 * Stamp identification by letters on the stamp.
  
 # Coming soon  
-+ Display image of stamp on Alexa Cards (waiting on Colnect to use secure https) 
+* Display image of stamp on Alexa Cards (waiting on Colnect to use secure hhttps) 
 * What is the latest stamp news?
 * Give me a random stamp term.
 * Tell me about the postal history of {country}.
 * What happened today in stamp history?
 * More Colnect.com commands:
-+ Get series of current stamp found
-+ Get variants of current stamp found
-+ Does colnect user {username} have any stamp from {Country} listed in his colnect collection. 
-+ Which countries does colnect user {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
-+ How many stamps does colnect user {usernme} have in their colnect collection.
-+ What postage stamp were issued by the {Country} in {year}?
+⋅⋅* Get series of current stamp found
+⋅⋅* Get variants of current stamp found
+⋅⋅* Does colnect user {username} have any stamp from {Country} listed in his colnect collection. 
+⋅⋅* Which countries does colnect user {usernme} not have a stamp listed in his colnect collection. (As you might have guessed, I'm working on collecting at least one stamp from every country ;) )
+⋅⋅* How many stamps does colnect user {usernme} have in their colnect collection.
+⋅⋅* What postage stamp were issued by the {Country} in {year}?
 
 
 # Contact 
