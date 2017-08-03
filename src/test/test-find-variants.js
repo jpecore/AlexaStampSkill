@@ -22,20 +22,21 @@ conversation(opts)
 //
 // Test
 //
+ 
 .userSays('StampFindIntent', {
     country : 'Canada',
     faceValue : '1',
     topic : 'Queen Elizabeth'
 }).ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain('Queen Elizabeth')
 .shouldContain('Say variants')
 //
 // Test
 //
 .userSays('ShowCurrentVariants')
 .ssmlResponse // access the SSML response
-.shouldContain("Queen Elizabeth II")
-
+.shouldContain("Queen Elizabeth")
+ 
  
 //
 //

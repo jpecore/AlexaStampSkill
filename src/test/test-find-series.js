@@ -27,27 +27,27 @@ conversation(opts)
     faceValue : '1',
     topic : 'Queen Elizabeth'
 }).ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain('Queen Elizabeth')
 .shouldContain('Say series to hear')
 //
 // Test
 //
 .userSays('ShowCurrentSeries')
 .ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain('Queen Elizabeth')
 
 //
 // Test
 //
 .userSays('NextStampIntent')
 .ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain('Queen Elizabeth')
 //
 // Test
 //
 .userSays('PrevStampIntent')
 .ssmlResponse // access the SSML response
-.shouldContain('Queen Elizabeth II')
+.shouldContain('Queen Elizabeth')
 //
 //
 // END Test

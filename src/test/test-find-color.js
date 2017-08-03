@@ -14,29 +14,36 @@ const
 app = require('../index.js');
 const
 opts = {
-    name : 'GoodFour',
+    name : 'Colors',
     app : app,
     appId : 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'
 };
-conversation(opts)
+conversation(opts).userSays('StampFindIntent', {
+    country : null,
+    faceValue : null,
+    color : 'green',
+    topic : 'King'
+}).ssmlResponse // access the SSML response
+.shouldContain('Colnect.com found')
 //
+ //
+// Test
+//
+
 // Test
 //
 .userSays('StampFindIntent', {
-    country : 'US',
-    faceValue : '25',
-    topic : 'Virginia'
+    faceValue : null,
+    country : 'UK',
+    color : 'green',
+    topic : 'Edward'
+	
 }).ssmlResponse // access the SSML response
-.shouldContain('Virginia Ratification Date')
-//
-// Test
-//
-.userSays('StampFindIntent', {
-    country : '',
-    faceValue : '25',
-    topic : 'Virginia'
-}).ssmlResponse // access the SSML response
-.shouldContain('Virginia Ratification Date')
+.shouldContain('Colnect.com found')
+ 
+
+
+
 //
 //
 // END Test

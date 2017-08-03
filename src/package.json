@@ -7,6 +7,6 @@
   "devDependencies": {
     "alexa-conversation": "^0.1.0",
     "bespoken-tools": "^0.9.45",
-    "mocha": "^3.4.2"
+    "mocha": "^3.5.0"
   }
 }
