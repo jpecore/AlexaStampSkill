@@ -18,7 +18,18 @@ opts = {
     app : app,
     appId : 'amzn1.ask.skill.5def441f-b36d-4f44-a8d7-f3c1a4837e17'
 };
-conversation(opts).userSays('StampFindIntent', {
+
+conversation(opts)
+.userSays('StampFindIntent', {
+    country : 'United States',
+    faceValue : '25',
+    color : null,
+    topic : 'Virginia'
+}).ssmlResponse // access the SSML response
+.shouldContain('Virginia')
+
+
+.userSays('StampFindIntent', {
     country : null,
     faceValue : null,
     color : 'green',

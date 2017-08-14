@@ -26,6 +26,10 @@ var API_PATH = "/en/api/" + COLNECT_API_KEY;
 var WIKI_HISTORY_URL = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&format=json&explaintext=&exsectionformat=plain&redirects=&titles=Postage_stamps_and_postal_history_of_";
 var NEWS_FEEDS = 'http://www.stampnews.com/feed';
 var NONE_STAMP = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
+var COLNECT_IMAGE_URL = 'https://i.colnect.net/images/f/';
+var COLNECT_IMAGE_THUMBNAIL_URL = 'https://i.colnect.net/images/t/';
+
+    
 // CONSTANTS
 var US_COLNET_COUNTRYID = 2669; // USA
 var UK_COLNET_COUNTRYID = 2611 // UK
@@ -93,6 +97,10 @@ var handlers = {
 	handleStampFindIntentRequest(this);
     },
     //
+    "StampFilterIntent" : function() {
+	handleStampFilterIntentRequest(this);
+    },
+    //
     "GetStampTermIntent" : function() {
 	handleGetStampTermIntentRequest(this);
     },
@@ -144,7 +152,7 @@ var handlers = {
     },
     //
     'Unhandled' : function() {
-	this.emit(':ask', 'Sorry, I didn\'t get that. Try saying a number.', 'Try saying a number.');
+	this.emit(':ask', 'Sorry, I didn\'t get that.', 'Say help if needed.');
     }
 };
 //
@@ -195,32 +203,28 @@ function handleGetStampIDIntent(that) {
 //
 //
 function stampDataFormatted(that, StampID, eventCallback) {
+    // TODO change arrays to variables 
     var speechText, cardTitle, cardText;
     getStampData(
 	    StampID,
 	    function(stampData) {
 		var speechText = "";
 		speechText = "The " + ShortenCountry(stampData[1]) + " " + stampData[13] + " "
-			+ stampData[12].substring(0, 1) + " " + stampData[0] + " " ;
-		
-		if ( stampData[23]  ) {
-		    speechText = speechText+  ", " + stampData[23] + " colored " ;
+			+ stampData[12].substring(0, 1) + " " + stampData[0] + " ";
+		if (stampData[23]) {
+		    speechText = speechText + ", " + stampData[23] + " colored ";
 		}
 		speechText = speechText + " stamp. Issued in " + stampData[4].substring(0, 4);
-		  
 		if (stampData[6]) {
 		    speechText = speechText + ", with a print run of " + numberWithCommas(stampData[6]);
 		}
 		speechText = speechText + ". ";
 		if (stampData[26]) {
 		    speechText = speechText + "The description says: " + stampData[26];
-		    if ( speechText.slice(-1) !== '.') {
-			    speechText = speechText + ".";
-			}
+		    if (speechText.slice(-1) !== '.') {
+			speechText = speechText + ".";
+		    }
 		}
-		
-		
-		
 		// CARD LAYOUT
 		// Colnect fields
 		// 0 ["Name","Country","Series","Catalog Codes","Issued on"
@@ -230,7 +234,12 @@ function stampDataFormatted(that, StampID, eventCallback) {
 		// 19 "Paper" "Watermark","Width", "Height","Colors",
 		// 24 "Name En","Tags" "Description"]
 		//
-		// none-image https://s3.amazonaws.com/pecore/none-stamps.jpg
+		 
+		if (stampData[8]) {
+		   // console.log ("FrontPicture = " + stampData[8]);
+		   // console.log ("Thumbnail Image = " + ImageThumbnailURL(stampData[8],stampData[0]))	;	
+		  //  console.log ("Full Image = " + ImageFullURL(stampData[8],stampData[0]))	;
+		}
 		if (stampData[1]) {
 		    cardText = cardText + "Country: " + stampData[1] + "\n";
 		}
@@ -290,17 +299,16 @@ function stampDataFormatted(that, StampID, eventCallback) {
 		if (stampData[2]) {
 		    speechText = speechText + "<p>Say series to hear about " + stampData[2] + ".</p>";
 		}
-		
-		 
 		if (stampData[7]) {
 		    speechText = speechText + "Say variants to get variants. ";
 		    that.attributes['VariantId'] = stampData[7];
-		   // console.log("setting attribute variantid to " +  stampData[7])
+		    // console.log("setting attribute variantid to " +
+		    // stampData[7])
 		    // console.log(stampData);
 		} else {
 		    that.attributes['VariantId'] = ""
 		}
-		console.log (speechText);
+		console.log(speechText);
 		cardTitle = stampData[0] + " (" + stampData[4].substr(0, 4) + ", " + ShortenCountry(stampData[1]) + ")";
 		// console.log(" stampDataFormatted speechText = " + speechText)
 		eventCallback(speechText, cardTitle, cardText);
@@ -320,6 +328,14 @@ function getSlotValue(Slot) {
 function handleStampFindIntentRequest(that) {
     console.log("in handleStampFindIntentRequest");
     // slots
+    // clear the session Atrributs
+    that.attributes['faceValue'] = "";
+    that.attributes['topicValue'] = "";
+    that.attributes['colorValue'] = "";
+    that.attributes['countryValue'] = "";
+    that.attributes['countryCode'] = "";
+    that.attributes['colorCode'] = "";
+ 
     var topicSlot = that.event.request.intent.slots.topic;
     var colorSlot = that.event.request.intent.slots.color
     var valueSlot = that.event.request.intent.slots.faceValue;
@@ -330,11 +346,20 @@ function handleStampFindIntentRequest(that) {
     // values TODO: replace vlaueSlot with that.event...
     var faceValue = getSlotValue(valueSlot);
     var topicValue = getSlotValue(topicSlot);
+    // save it in session for Filtering
+    that.attributes['topicValue'] = topicValue
     var colorValue = getSlotValue(colorSlot);
     var countryValue = getSlotValue(countrySlot);
     //
     var CountryCode = ""; // = US_COLNET_COUNTRYID;
     var ColorCode = getColorCode(colorValue);
+    // save values for possible filter later
+    that.attributes['faceValue'] = faceValue;
+    that.attributes['colorValue'] = colorValue;
+    
+  
+    that.attributes['countryValue'] = countryValue;
+    console.log ("a that.attributes['countryValue'] : " + that.attributes['countryValue'] )
     //
     var speechText = "You need to provide the name of the stamp. Say for example find name Detroit"
 	    + "What name can I find?  ";
@@ -351,6 +376,7 @@ function handleStampFindIntentRequest(that) {
     // make URL acccessable
     if (topicValue) {
 	topicValue = topicValue.replace(/ /gm, '+');
+	that.attributes['topicValue'] = topicValue;
     } else {
 	// response.ask(speechOutputForMissingFields, repromptText);
 	that.emit(':ask', speechText, repromptText);
@@ -372,13 +398,14 @@ function handleStampFindIntentRequest(that) {
 	} else {
 	    CountryCode = getCountryCode(countryValue);
 	}
-	 // console.log("CountryCode from slot = " + CountryCode)
-         if (CountryCode == "Invalid") {
-	        
-	 	that.emit(':ask', speechOutputForUnknownCoutry, repromptText);
-	 	return;
-	  }
-	 
+	// console.log("CountryCode from slot = " + CountryCode)
+	
+	that.attributes['countryCode'] = CountryCode;
+	
+	if (CountryCode == "Invalid") {
+	    that.emit(':ask', speechOutputForUnknownCoutry, repromptText);
+	    return;
+	}
     }
     // console.log("CountryCode = " + CountryCode);
     /*
@@ -393,15 +420,114 @@ function handleStampFindIntentRequest(that) {
      *///
     // console.log("calling get StampValueTopic with " + faceValue + " " +
     // topicValue + " " + CountryCode);
- //  console.log("calling getStampLookup with faceValue:" + faceValue + " topicValue:" + topicValue
-//		+ " CountryCode:" + CountryCode + " ColorCode:" + ColorCode);
-  getStampLookup(that, faceValue, topicValue, CountryCode, ColorCode, function(jsonResult) {
+    // console.log("calling getStampLookup with faceValue:" + faceValue + "
+    // topicValue:" + topicValue
+    // + " CountryCode:" + CountryCode + " ColorCode:" + ColorCode);
+    getStampLookup(that, faceValue, topicValue, CountryCode, ColorCode, function(jsonResult) {
 	// console.log('jsonResult: ' + jsonResult);
 	StampListReponse(that, jsonResult);
 	// console.log ('jsonResult');
 	// console.log (jsonResult);
     })
 } // end handleStampFindIntentRequest
+
+
+function handleStampFilterIntentRequest(that) {
+    console.log("in handleStampFilterIntentRequest");
+    // slots
+ //   var topicSlot = that.event.request.intent.slots.topic;
+  
+    var colorSlot = that.event.request.intent.slots.color
+    var valueSlot = that.event.request.intent.slots.faceValue;
+    var countrySlot = that.event.request.intent.slots.country;
+    var repromptText = "What would you like to do?";
+    var cardContent = "";
+    var cardTitle = "Stamp";
+    // values TODO: replace vlaueSlot with that.event...
+    // get the topic from the last "find" 
+    var topicValue =  that.attributes['topicValue'];
+    
+    
+    var faceValue = getSlotValue(valueSlot);
+    if (faceValue == null ) {
+	faceValue =  that.attributes['faceValue'];
+    }
+  
+    var colorValue = getSlotValue(colorSlot);
+    if (colorValue == null ) {
+	colorValue =  that.attributes['colorValue'];
+    }
+    var countryValue = getSlotValue(countrySlot);
+    if (countryValue == null ) {
+	countryValue =  that.attributes['countryValue'];
+    }
+    //
+    var CountryCode = ""; // = US_COLNET_COUNTRYID;
+    var ColorCode = getColorCode(colorValue);
+    that.attributes['colorCode'] = ColorCode;
+    //
+    var speechText = "You need to provide what to filter last find by. Say for example Filter by color green"
+	    + "What name can I find?  ";
+    var speechOutputForUnknownCoutry = "I could not find that country in Colnet.com. How else can I assit you?";
+    // clear attributes
+    that.attributes['stampsFound'] = "{}";
+    that.attributes['stampIndex'] = 0;
+    /*
+     * if (faceValue) { // we have one } else { //
+     * response.ask(speechOutputForMissingFields, repromptText);
+     * that.emit(':ask', speechText, repromptText); return; }
+     */
+    ;
+    
+ 
+   
+    // TODO: handle color
+    /*
+     * TODO: Move to FILTER
+     */
+    // console.log("countryValue = " + countryValue);
+    if (countryValue) {
+	if (isUSA(countryValue)) {
+	    CountryCode = US_COLNET_COUNTRYID;
+	} else if (isUK(countryValue)) {
+	    CountryCode = UK_COLNET_COUNTRYID;
+	    // console.log('CountryCode = ' + CountryCode);
+	} else {
+	    CountryCode = getCountryCode(countryValue);
+	}
+	that.attributes['countryCode'] = CountryCode;
+	// console.log("CountryCode from slot = " + CountryCode)
+	if (CountryCode == "Invalid") {
+	    that.emit(':ask', speechOutputForUnknownCoutry, repromptText);
+	    return;
+	}
+    }
+    // console.log("CountryCode = " + CountryCode);
+    /*
+     * not a good idea else { // use "locale" // covert 2 codes to Country Name //
+     * console.log("request.locale = " + request.locale) locale =
+     * that.event.request.locale.substring(3, 5); // console.log(" locale = " +
+     * locale) var CountryName = iso_countries.getName(locale, "en") //
+     * console.log("CountryName = " + CountryName) CountryCode =
+     * getCountryCode(CountryName) // console.log("CountryCode from locale = " +
+     * CountryCode) if (!CountryCode) { that.emit(':ask',
+     * speechOutputForUnknownCoutry, repromptText); return; } }
+     *///
+    // console.log("calling get StampValueTopic with " + faceValue + " " +
+    // topicValue + " " + CountryCode);
+    // console.log("calling getStampLookup with faceValue:" + faceValue + "
+    // topicValue:" + topicValue
+    // + " CountryCode:" + CountryCode + " ColorCode:" + ColorCode);
+    getStampLookup(that, faceValue, topicValue, CountryCode, ColorCode, function(jsonResult) {
+	// console.log('jsonResult: ' + jsonResult);
+	StampListReponse(that, jsonResult);
+	// console.log ('jsonResult');
+	// console.log (jsonResult);
+    })
+} // end handleStampFilterIntentRequest
+
+
+
 //
 function ShortenCountry(c) {
     switch (c) {
@@ -423,7 +549,7 @@ function StampListReponse(that, jsonResult) {
     var cardTitle = "Stamp Year ";
     var smallImageURL = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
     var count = Object.keys(jsonResult).length;
-  //  console.log('count = ' + count);
+    // console.log('count = ' + count);
     // limit to top 5
     // console.log(jsonResult);
     that.attributes['stampIndex'] = 0;
@@ -432,13 +558,12 @@ function StampListReponse(that, jsonResult) {
     // Object.keys(jsonResult).length);
     switch (count) {
     case 0: // no stamp found
-	//console.log('jsonResult is 0');
-	 
+	// console.log('jsonResult is 0');
 	speechText = "sorry, I could not find that stamp. How else can I help you?";
 	that.emit(':ask', speechText, repromptText);
 	break;
     case 1: // only 1 found
-	//console.log('jsonResult is 1');
+	// console.log('jsonResult is 1');
 	that.attributes['stampsFound'] = JSON.stringify(jsonResult);
 	var firstMatch = jsonResult[Object.keys(jsonResult)[0]];
 	var StampID = firstMatch[Object.keys(firstMatch)[0]]
@@ -454,7 +579,7 @@ function StampListReponse(that, jsonResult) {
 	})
 	break;
     default: // more then one found
-	//console.log('jsonResult is more then one');
+	// console.log('jsonResult is more then one');
 	// only step through first 5
 	var jsonResultTop5 = jsonResult.slice(0, 5);
 	that.attributes['stampsFound'] = JSON.stringify(jsonResultTop5);
@@ -469,7 +594,7 @@ function StampListReponse(that, jsonResult) {
 	stampDataFormatted(that, StampID, function(speechText, cardTitle, cardContent) {
 	    speechText = "Colnect.com found " + jsonResult.length + " stamps. The first one is " + speechText;
 	    speechText = speechText + "\n"
-		    + " Say Next view the top 10 or Find stamp to locate a different. What would you like?";
+		    + " Say Next to view the top 5, Filter to narrow the search down or Find stamp to locate a different. What would you like?";
 	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent); // ,
 	    // imageObj);
 	})
@@ -485,17 +610,19 @@ function getColorCode(color) {
     }
     var arrayFound = ColnectCOLORS.filter(function(item) {
 	return item[1].toLowerCase() === color; // /string1.toUpperCase() ===
-						// string2.toUpperCase();
+	// string2.toUpperCase();
     });
     if (arrayFound && arrayFound[0] && arrayFound[0][0]) {
 	// console.log ("arrayFound " + arrayFound[0][0])
 	// console.log ( arrayFound[0][0])
 	return arrayFound[0][0];
     }
-  //  console.log("did not find color");
+    // console.log("did not find color");
     return "";
 } // end getColorCode
 function getCountryCode(Country) {
+    // TODO: combine with is isUSA and isUK!
+    
     // console.log("find country " + Country)
     var arrayFound = ColnectCOUNTRIES.filter(function(item) {
 	return item[1] == Country;
@@ -511,14 +638,23 @@ function getCountryCode(Country) {
 } // end getCountryCode
 //
 function isUSA(countryValue) {
-    return countryValue == "US" || countryValue == "USA" || countryValue == "us" || countryValue == "u s"
-	    || countryValue.value == "United States" || countryValue == "United States of America";
+   // console.log("in isUSA. " + countryValue );
+    var countryValueLower = countryValue.toLowerCase();
+    var result =  
+	  countryValueLower == "usa" 
+	    || countryValueLower == "us" 
+	     || countryValueLower == "u s"
+	     || countryValueLower == "united states" 
+	     || countryValueLower == "united states of america";
+   // console.log('isUSA result = ' + result);
+    return result;
 }; // end isUSA
 //
 function isUK(countryValue) {
-    return countryValue == "UK" || countryValue == "United Kingdom" || countryValue == "GB"
-	    || countryValue == "Great Britain"
-	    || countryValue == "United Kingdom of Great Britain and Northern Ireland";
+    var countryValueLower = countryValue.toLowerCase();
+    return countryValueLower == "uk" || countryValueLower == "united kingdom" || countryValueLower == "gb"
+	    || countryValueLower == "great britain"
+	    || countryValueLower == "united kingdom of great britain and northern ireland";
 }; // end isUK
 //
 function handleGetStampTermIntentRequest(that) {
@@ -564,7 +700,7 @@ function getStampData(stampID, eventCallback) {
 	},
 	path : urlStampID
     };
-    http.get(request_options, function(res) {
+    https.get(request_options, function(res) {
 	var body = '';
 	res.on('data', function(chunk) {
 	    body += chunk;
@@ -579,22 +715,32 @@ function getStampData(stampID, eventCallback) {
 }; // end getStampData
 //
 function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCallback) {
-    console.log("in getStampLookup");
-    // console.log('value and topic = ' + value + " " + topic);
+     console.log("in getStampLookup");
+     console.log('value / topic / country / color = ' + face_value + "/" + topic + "/" +CountryCode + "/" + colorCode);
+  
     var urlStampLlst = '/en/api/' + COLNECT_API_KEY + '/list/cat/stamps/format/1';
     // console.log("urlStampLlst = " + urlStampLlst);
     // !!!!!
     // Get the ID for face_value !!!!
     // !!!!
-    if (CountryCode !== "") {
-	that.attributes['CountryCode'] = CountryCode;
+    
+    // make url valid
+    if (topic !== null) {
+	topic = topic.replace(/ /gm, '+');
     }
+	
+    if (CountryCode !== "") {
+	CountryCode = that.attributes['countryCode'] ;
+    }
+    console.log ('CountryCode = ' + CountryCode);
     if (colorCode !== null) {
-	that.attributes['colorCode'] = colorCode;
+	colorCode = that.attributes['colorCode'];
     }
     var faceValuesCountryURL
     /** country optional * */
     // TODO clean up if then else
+    
+    
     if (CountryCode && CountryCode !== "" && typeof CountryCode !== "undefined") {
 	faceValuesCountryURL = FACEVALUE_PATH + "/country/" + CountryCode;
     } else if (face_value && face_value !== "") {
@@ -603,11 +749,12 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 	faceValuesCountryURL = "";
 	// no need to look up face value.
     }
+    
     // console.log("faceValuesCountryURL = " + faceValuesCountryURL);
     var faceValuesjson;
     if (face_value && face_value !== "null" && face_value !== "") {
-	//console.log ('there is a faceValue, get the code.')
-	// there  is a face  value, get the faceValue code
+	// console.log ('there is a faceValue, get the code.')
+	// there is a face value, get the faceValue code
 	var request_options = {
 	    host : URL_COLNECT_API,
 	    headers : {
@@ -615,7 +762,7 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 	    },
 	    path : faceValuesCountryURL
 	};
-	http.get(request_options, function(res) {
+	https.get(request_options, function(res) {
 	    var body = '';
 	    var ColnectValueTopicPath = "";
 	    res.on('data', function(chunk) {
@@ -654,18 +801,21 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 		    eventCallback("");
 		    return;
 		}
+		
+		
 		if (face_value_id && face_value_id !== "") {
 		    ColnectValueTopicPath = urlStampLlst + '/face_value/' + face_value_id + '/name/' + topic;
 		} else {
 		    ColnectValueTopicPath = urlStampLlst + '/name/' + topic;
 		}
-		if (typeof that.attributes['CountryCode'] !== "undefined" && that.attributes['CountryCode'] !== "") {
-		    ColnectValueTopicPath = ColnectValueTopicPath + "/country/" + that.attributes['CountryCode'];
+		 
+		if (typeof that.attributes['countryCode'] !== "undefined" && that.attributes['countryCode'] !== "") {
+		    ColnectValueTopicPath = ColnectValueTopicPath + "/country/" + that.attributes['countryCode'];
 		}
 		if (that.attributes['colorCode'] != null && that.attributes['colorCode'] != "") {
 		    ColnectValueTopicPath = ColnectValueTopicPath + '/color/' + colorCode;
 		}
-		  console.log('1 ColnectValueTopicPath = ' + ColnectValueTopicPath)
+		console.log('1 ColnectValueTopicPath = ' + ColnectValueTopicPath)
 		var request_options = {
 		    host : URL_COLNECT_API,
 		    headers : {
@@ -673,7 +823,7 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 		    },
 		    path : ColnectValueTopicPath
 		}; // end request_options
-		http.get(request_options, function(res) {
+		https.get(request_options, function(res) {
 		    var body = '';
 		    res.on('data', function(chunk) {
 			body += chunk;
@@ -700,15 +850,18 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 	    }); // end res.on error
 	}); // end get
     } else { // no face value
-	//console.log ("no face value provided.")
+	// console.log ("no face value provided.")
 	ColnectValueTopicPath = urlStampLlst + '/name/' + topic;
-	if (typeof that.attributes['CountryCode'] !== "undefined" && that.attributes['CountryCode'] !== "") {
-	    ColnectValueTopicPath = ColnectValueTopicPath + "/country/" + that.attributes['CountryCode'];
+	console.log ( "1 that.attributes['countryCode'] = " + that.attributes['countryCode'] );
+	if (typeof that.attributes['countryCode'] !== "undefined" && that.attributes['countryCode'] !== "") {
+	    ColnectValueTopicPath = ColnectValueTopicPath + "/country/" + that.attributes['countryCode'];
 	}
+	
+	console.log ('2 CountryCode = ' + CountryCode);
 	if (that.attributes['colorCode'] != null && that.attributes['colorCode'] != "") {
 	    ColnectValueTopicPath = ColnectValueTopicPath + '/color/' + colorCode;
 	}
-	 console.log('2 ColnectValueTopicPath = ' + ColnectValueTopicPath)
+	console.log('2 ColnectValueTopicPath = ' + ColnectValueTopicPath)
 	var request_options = {
 	    host : URL_COLNECT_API,
 	    headers : {
@@ -716,7 +869,7 @@ function getStampLookup(that, face_value, topic, CountryCode, colorCode, eventCa
 	    },
 	    path : ColnectValueTopicPath
 	};
-	http.get(request_options, function(res) {
+	https.get(request_options, function(res) {
 	    var body = '';
 	    res.on('data', function(chunk) {
 		body += chunk;
@@ -754,7 +907,7 @@ function getStampSeries(seriesId, eventCallback) {
 	},
 	path : ColnectValueTopicPath
     };
-    http.get(request_options, function(res) {
+    https.get(request_options, function(res) {
 	var body = '';
 	res.on('data', function(chunk) {
 	    body += chunk;
@@ -778,10 +931,11 @@ function getStampSeries(seriesId, eventCallback) {
 function getStampVariants(Id, eventCallback) {
     console.log("in getStampVariants");
     console.log("Varient Id =" + Id);
-    var ColnectValueTopicPath = API_PATH  ;
+    var ColnectValueTopicPath = API_PATH;
     if (Id) {
 	ColnectValueTopicPath = ColnectValueTopicPath + '/list/cat/stamps/variant/' + Id;
-    };
+    }
+    ;
     // http://api.colnect.net/en/api/xxx/list/cat/stamps/variant//
     // console.log('variant ColnectValueTopicPath = ' + ColnectValueTopicPath)
     var request_options = {
@@ -791,7 +945,7 @@ function getStampVariants(Id, eventCallback) {
 	},
 	path : ColnectValueTopicPath
     };
-    http.get(request_options, function(res) {
+    https.get(request_options, function(res) {
 	var body = '';
 	res.on('data', function(chunk) {
 	    body += chunk;
@@ -802,7 +956,7 @@ function getStampVariants(Id, eventCallback) {
 	    if (body.indexOf("404 Not Found") > -1 || body == "[]") {
 		jsonResult = "";
 	    } else {
-		console.log("ColnectValueTopicPath " + ColnectValueTopicPath);
+		console.log("ColnectValueTopicPath (variants " + ColnectValueTopicPath);
 		jsonResult = JSON.parse(body);
 	    }
 	    eventCallback(jsonResult);
@@ -951,7 +1105,7 @@ function getUsernameRatings(username, eventCallback) {
 	},
 	path : urlCollectRatingsPath
     };
-    http.get(request_options, function(res) {
+    https.get(request_options, function(res) {
 	var body = '';
 	res.on('data', function(chunk) {
 	    body += chunk;
@@ -988,7 +1142,7 @@ function getCAPI(urlPath, eventCallback) {
 	},
 	path : urlPath
     };
-    http.get(request_options, function(res) {
+    https.get(request_options, function(res) {
 	var body = '';
 	res.on('data', function(chunk) {
 	    body += chunk;
@@ -1180,10 +1334,14 @@ function handleShowCurrentSeriesRequest(that) {
     var Stamps;
     if (typeof that.attributes['stampsFound'] !== "undefined") {
 	Stamps = JSON.parse(that.attributes['stampsFound']);
-    }
-    var firstStamp = Stamps[0];
-    if (firstStamp) {
-	var seriesId = firstStamp[1];
+    } 
+    if (Stamps) {
+	var firstStamp = Stamps[0];
+	if (firstStamp) {
+	    var seriesId = firstStamp[1];
+	} else {
+	    jsonResult = "";
+	}
     } else {
 	jsonResult = "";
     }
@@ -1313,7 +1471,7 @@ function handlePrintSomethingIntentRequest(that) {
     }
     speechText = speechText + "<p>How else can I assit you?</p>"
     cardContent = speechOutput + "\n  Link: http://www.linns.com/insights/glossary-of-philatelic-terms.html.html";
-    emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
+    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
 } // end handlePrintSomethingIntentRequest
 function handleNewsIntentRequest(that) {
     var parser = require('rss-parser');
@@ -1341,6 +1499,142 @@ function handleNewsIntentRequest(that) {
 	that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent);
     })
 } // end handleNewsIntentRequest
+//
+function ImageURL(PictureID,Name) {
+   /***
+    Here’s an example:
+	https://i.colnect.net/images/t/142/891/Pasteur-Louis.jpg
+	The /t/ indicates a thumbnail image and can be replaced by /f/ for the bigger image
+	The front_image_id in this case was 142891 and the number is broken by a / as a thousands separator.
+	The last part has the item_name field in it adjusted by the urlize function (see appendix).
+	So if an item has the name “Some Name” and its back_picture_id is 1234567 the URL for its full size picture would be
+	https://i.colnect.net/images/f/1234/567/Some_Name.jpg
+   ****/
+   
+   var URL;
+   var PictureIDString = PictureID.toString();
+   var lastThreeDigits = PictureIDString.substr(PictureIDString.length - 3);
+   var AllButLastThree = PictureIDString.substr(0, PictureIDString.length - 3 );
+   URL =  AllButLastThree + '/' + lastThreeDigits + '/' + urlize(Name) + '.jpg'; 
+   
+   return URL;
+    
+
+}
+function ImageFullURL(PictureID,Name) {
+    /***	 
+ 	The /t/ indicates a thumbnail image and can be replaced by /f/ for the bigger image	 
+    ****/
+    var URL;
+    URL = COLNECT_IMAGE_URL + ImageURL(PictureID,Name);
+    
+  //  console.log ('Full ImageURL returning: ' + URL);
+    return URL;
+     
+
+ }
+function ImageThumbnailURL(PictureID,Name) {
+    /***	 
+ 	The /t/ indicates a thumbnail image and can be replaced by /f/ for the bigger image	 
+    ****/
+    var URL;
+    URL = COLNECT_IMAGE_THUMBNAIL_URL + ImageURL(PictureID,Name) ;
+    
+  // console.log ('Thumnail ImageURL returning: ' + URL);
+    return URL;
+     
+
+ }
+//
+ 
+function urlize(str) {
+ // This function turns a name into a slug to be used in a URL. It basically strips invalid characters and replaces space sequences with underscores.
+ console.log ('str = '  + str);
+      //  $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
+ // words.replace(/ /g, '');
+	str = str.replace(/&[^;]+;/gm, '_'); // # change HTML elements to underscore
+	  console.log ('str2 = '  + str);
+	str = str.replace(/ /g, '_');
+	  console.log ('str3 = '  + str);
+	// TODO: replaicate str-replace.
+	// $str = str_replace(array('.', '"', '>', '<', '\\', ':', '/', '?', '#', '[', ']', '@', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '='), '', $str);
+	str = str.replace(/[\s_]+/gm, '_'); // # any space sequence becomes a single underscore
+	str = str.trim('_'); //# trim underscores
+ 	return str;
+}
+
+function str_replace (search, replace, subject, countObj) { // eslint-disable-line camelcase
+    //  discuss at: http://locutus.io/php/str_replace/
+    
+    var i = 0
+    var j = 0
+    var temp = ''
+    var repl = ''
+    var sl = 0
+    var fl = 0
+    var f = [].concat(search)
+    var r = [].concat(replace)
+    var s = subject
+    var ra = Object.prototype.toString.call(r) === '[object Array]'
+    var sa = Object.prototype.toString.call(s) === '[object Array]'
+    s = [].concat(s)
+    var $global = (typeof window !== 'undefined' ? window : global)
+    $global.$locutus = $global.$locutus || {}
+    var $locutus = $global.$locutus
+    $locutus.php = $locutus.php || {}
+    if (typeof (search) === 'object' && typeof (replace) === 'string') {
+      temp = replace
+      replace = []
+      for (i = 0; i < search.length; i += 1) {
+        replace[i] = temp
+      }
+      temp = ''
+      r = [].concat(replace)
+      ra = Object.prototype.toString.call(r) === '[object Array]'
+    }
+    if (typeof countObj !== 'undefined') {
+      countObj.value = 0
+    }
+    for (i = 0, sl = s.length; i < sl; i++) {
+      if (s[i] === '') {
+        continue
+      }
+      for (j = 0, fl = f.length; j < fl; j++) {
+        temp = s[i] + ''
+        repl = ra ? (r[j] !== undefined ? r[j] : '') : r[0]
+        s[i] = (temp).split(f[j]).join(repl)
+        if (typeof countObj !== 'undefined') {
+          countObj.value += ((temp.split(f[j])).length - 1)
+        }
+      }
+    }
+    return sa ? s : s[0]
+  }
+
+
+function html_entity_decode (string, quoteStyle) { // eslint-disable-line camelcase
+    // http://locutus.io/php/strings/html_entity_decode/
+    var getHtmlTranslationTable = require('../strings/get_html_translation_table')
+    var tmpStr = ''
+    var entity = ''
+    var symbol = ''
+    tmpStr = string.toString()
+    var hashMap = getHtmlTranslationTable('HTML_ENTITIES', quoteStyle)
+    if (hashMap === false) {
+      return false
+    }
+    // @todo: &amp; problem
+    // http://locutus.io/php/get_html_translation_table:416#comment_97660
+    delete (hashMap['&'])
+    hashMap['&'] = '&amp;'
+    for (symbol in hashMap) {
+      entity = hashMap[symbol]
+      tmpStr = tmpStr.split(entity).join(symbol)
+    }
+    tmpStr = tmpStr.split('&#039;').join("'")
+    return tmpStr
+  }
+
 //
 function pubDate2voice(pubDate) {
     var date = new Date(pubDate);
