@@ -549,6 +549,10 @@ function StampListReponse(that, jsonResult) {
     var cardTitle = "Stamp Year ";
     var smallImageURL = 'https://s3.amazonaws.com/pecore/none-stamps.jpg';
     var count = Object.keys(jsonResult).length;
+   
+   
+    
+    
     // console.log('count = ' + count);
     // limit to top 5
     // console.log(jsonResult);
@@ -567,6 +571,13 @@ function StampListReponse(that, jsonResult) {
 	that.attributes['stampsFound'] = JSON.stringify(jsonResult);
 	var firstMatch = jsonResult[Object.keys(jsonResult)[0]];
 	var StampID = firstMatch[Object.keys(firstMatch)[0]]
+        var PictureID =  firstMatch[Object.keys(firstMatch)[3]]
+	var StampName =  firstMatch[Object.keys(firstMatch)[7]]
+	var imageObj = { 
+		    smallImageUrl:  ImageThumbnailURL(PictureID,StampName),
+		    largeImageUrl:  ImageFullURL(PictureID,StampName)
+		};
+	console.log ('smallImageUrl = = '  + ImageThumbnailURL(PictureID,StampName));
 	// console.log(' StampID =' + StampID);
 	stampDataFormatted(that, StampID, function(speechText, cardTitle, cardContent) {
 	    /*
@@ -574,7 +585,7 @@ function StampListReponse(that, jsonResult) {
 	     * smallImageUrl : smallImageURL, largeImageUrl : smallImageURL };
 	     */
 	    speechText = speechText + "How else can I help?";
-	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent); // ,
+	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent, imageObj); // ,
 	    // imageObj);
 	})
 	break;
@@ -585,6 +596,14 @@ function StampListReponse(that, jsonResult) {
 	that.attributes['stampsFound'] = JSON.stringify(jsonResultTop5);
 	var firstMatch = jsonResultTop5[Object.keys(jsonResultTop5)[0]];
 	var StampID = firstMatch[Object.keys(jsonResultTop5)[0]]
+	  var PictureID =  firstMatch[Object.keys(firstMatch)[3]]
+	var StampName =  firstMatch[Object.keys(firstMatch)[7]]
+	
+	var imageObj = { 
+		    smallImageUrl:  ImageThumbnailURL(PictureID,StampName),
+		    largeImageUrl:  ImageFullURL(PictureID,StampName)
+		};
+	console.log ('smallImageUrl = = '  + ImageThumbnailURL(PictureID,StampName));
 	var speechText;
 	/*
 	 * waiting on colnect to get secure http!!! var imageObj = {
@@ -595,7 +614,7 @@ function StampListReponse(that, jsonResult) {
 	    speechText = "Colnect.com found " + jsonResult.length + " stamps. The first one is " + speechText;
 	    speechText = speechText + "\n"
 		    + " Say Next to view the top 5, Filter to narrow the search down or Find stamp to locate a different. What would you like?";
-	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent); // ,
+	    that.emit(':askWithCard', speechText, repromptText, cardTitle, cardContent,imageObj); // ,
 	    // imageObj);
 	})
 	break;
@@ -1549,13 +1568,13 @@ function ImageThumbnailURL(PictureID,Name) {
  
 function urlize(str) {
  // This function turns a name into a slug to be used in a URL. It basically strips invalid characters and replaces space sequences with underscores.
- console.log ('str = '  + str);
+// console.log ('str = '  + str);
       //  $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
  // words.replace(/ /g, '');
 	str = str.replace(/&[^;]+;/gm, '_'); // # change HTML elements to underscore
-	  console.log ('str2 = '  + str);
+	//  console.log ('str2 = '  + str);
 	str = str.replace(/ /g, '_');
-	  console.log ('str3 = '  + str);
+	//  console.log ('str3 = '  + str);
 	// TODO: replaicate str-replace.
 	// $str = str_replace(array('.', '"', '>', '<', '\\', ':', '/', '?', '#', '[', ']', '@', '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '='), '', $str);
 	str = str.replace(/[\s_]+/gm, '_'); // # any space sequence becomes a single underscore
